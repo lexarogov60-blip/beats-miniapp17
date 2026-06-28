@@ -114,7 +114,6 @@
       box-shadow: var(--glass-shadow);
     }
 
-    /* Ключик для входа (без свечения) */
     .login-key {
       font-size: 16px;
       cursor: pointer;
@@ -370,7 +369,7 @@
       transform: scale(0.95);
     }
 
-    /* ===== ДРОПДАУН СОРТИРОВКИ (исправлен) ===== */
+    /* ===== ДРОПДАУН СОРТИРОВКИ (со скруглениями) ===== */
     .sort-dropdown {
       position: relative;
       display: inline-block;
@@ -440,13 +439,12 @@
       cursor: pointer;
       transition: 0.2s;
       white-space: nowrap;
-      border-radius: 0; /* убираем фон по умолчанию */
+      border-radius: 6px; /* скругление для пунктов */
     }
 
     .sort-dropdown .sort-menu .sort-option:hover {
       background: var(--accent);
       color: #fff;
-      /* заливка только при наведении на пункт */
     }
 
     .sort-dropdown .sort-menu .sort-option.active {
@@ -575,7 +573,6 @@
       text-shadow: 0 0 8px var(--accent-glow);
     }
 
-    /* ===== КОНТЕЙНЕР ДЛЯ ОБЛОЖКИ ===== */
     .beat-cover {
       flex: 0 0 50px;
       width: 50px;
@@ -623,7 +620,6 @@
       justify-content: flex-end;
     }
 
-    /* ===== КНОПКА PLAY (без круга, с анимацией) ===== */
     .play-btn {
       background: transparent;
       border: none;
@@ -812,7 +808,7 @@
       opacity: 0.5;
     }
 
-    /* ===== МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ (с обложкой) ===== */
+    /* ===== МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ ===== */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -929,6 +925,7 @@
       align-items: center;
       gap: 10px;
       margin-top: 4px;
+      flex-wrap: wrap;
     }
 
     .modal .cover-preview img {
@@ -942,6 +939,25 @@
     .modal .cover-preview span {
       font-size: 12px;
       color: var(--secondary-text);
+    }
+
+    .modal .cover-preview .delete-cover-btn {
+      background: transparent;
+      color: var(--delete-color);
+      border: 1px solid var(--delete-color);
+      border-radius: 30px;
+      padding: 2px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      opacity: 0.7;
+    }
+
+    .modal .cover-preview .delete-cover-btn:hover {
+      opacity: 1;
+      background: var(--delete-color);
+      color: #fff;
     }
 
     .modal .form-actions {
@@ -1141,6 +1157,7 @@
           <div class="cover-preview" id="editCoverPreview" style="display:none;">
             <img id="editCoverImg" src="" alt="обложка">
             <span>Текущая обложка</span>
+            <button class="delete-cover-btn" id="deleteCoverBtn">🗑 Удалить</button>
           </div>
         </div>
         <div class="form-actions">
@@ -1237,6 +1254,7 @@
     const editCoverFile = document.getElementById('editCoverFile');
     const editCoverPreview = document.getElementById('editCoverPreview');
     const editCoverImg = document.getElementById('editCoverImg');
+    const deleteCoverBtn = document.getElementById('deleteCoverBtn');
     const cancelEditBtn = document.getElementById('cancelEditBtn');
     const saveEditBtn = document.getElementById('saveEditBtn');
     let editingBeatId = null;
@@ -1360,7 +1378,7 @@
     }
 
     // ============================================================
-    // 11. ДОБАВЛЕНИЕ БИТА (с аудио и обложкой)
+    // 11. ДОБАВЛЕНИЕ БИТА
     // ============================================================
     function addBeat() {
       if (!isOwner) {
@@ -1398,7 +1416,6 @@
       let audioUrl = null;
       let coverUrl = null;
 
-      // Загружаем аудио, если есть
       if (audioFileObj) {
         showSnackbar('⏳ Загрузка аудио...');
         uploadPromises.push(
@@ -1407,7 +1424,6 @@
           })
         );
       }
-      // Загружаем обложку, если есть
       if (coverFileObj) {
         showSnackbar('⏳ Загрузка обложки...');
         uploadPromises.push(
@@ -1418,7 +1434,6 @@
       }
 
       if (uploadPromises.length === 0) {
-        // Ничего не загружаем, сразу сохраняем
         beatsRef.push(newBeat)
           .then(() => {
             showSnackbar(`Бит "${name}" добавлен!`);
@@ -1468,7 +1483,7 @@
     }
 
     // ============================================================
-    // 13. РЕДАКТИРОВАНИЕ БИТА (с обложкой)
+    // 13. РЕДАКТИРОВАНИЕ БИТА (с удалением обложки)
     // ============================================================
     function openEditModal(id) {
       const beat = beats.find(b => b.id === id);
@@ -1478,12 +1493,13 @@
       editBpm.value = beat.bpm;
       editKey.value = beat.key;
       editCoverFile.value = '';
-      // Показываем текущую обложку, если есть
       if (beat.coverUrl) {
         editCoverImg.src = beat.coverUrl;
         editCoverPreview.style.display = 'flex';
+        deleteCoverBtn.style.display = 'inline-block';
       } else {
         editCoverPreview.style.display = 'none';
+        deleteCoverBtn.style.display = 'none';
       }
       editModal.classList.add('active');
     }
@@ -1496,6 +1512,21 @@
       editKey.value = '';
       editCoverFile.value = '';
       editCoverPreview.style.display = 'none';
+    }
+
+    function deleteCover() {
+      if (!isOwner || !editingBeatId) return;
+      if (!confirm('Удалить обложку этого бита?')) return;
+      // Удаляем поле coverUrl в базе
+      beatsRef.child(editingBeatId).update({ coverUrl: null })
+        .then(() => {
+          showSnackbar('Обложка удалена');
+          // Скрываем превью
+          editCoverPreview.style.display = 'none';
+          // Обновляем список
+          renderBeats();
+        })
+        .catch(err => showSnackbar('Ошибка: ' + err.message));
     }
 
     function saveEdit() {
@@ -1516,7 +1547,6 @@
       const coverFileObj = editCoverFile.files[0];
 
       if (coverFileObj) {
-        // Загружаем новую обложку
         showSnackbar('⏳ Загрузка обложки...');
         uploadFileToCloudinary(coverFileObj)
           .then(coverUrl => {
@@ -1532,7 +1562,6 @@
             console.error(err);
           });
       } else {
-        // Без изменения обложки
         beatsRef.child(editingBeatId).update(updates)
           .then(() => {
             showSnackbar('Бит обновлён!');
@@ -1544,6 +1573,8 @@
 
     cancelEditBtn.addEventListener('click', closeEditModal);
     saveEditBtn.addEventListener('click', saveEdit);
+    deleteCoverBtn.addEventListener('click', deleteCover);
+
     editModal.addEventListener('click', (e) => {
       if (e.target === editModal) closeEditModal();
     });
@@ -1577,7 +1608,7 @@
     }
 
     // ============================================================
-    // 15. ВОСПРОИЗВЕДЕНИЕ/ПАУЗА (без изменений)
+    // 15. ВОСПРОИЗВЕДЕНИЕ/ПАУЗА
     // ============================================================
     let currentAudio = null;
     let currentPlayerElements = null;
@@ -1799,7 +1830,6 @@
         filtered = filtered.filter(b => b.name.toLowerCase().includes(q));
       }
 
-      // Сортировка
       if (currentSort === 'newest') {
         filtered.sort((a, b) => {
           const aTime = a.createdAt || a.id;
@@ -1843,7 +1873,6 @@
           </div>
         `;
 
-        // Обложка
         let coverHtml = '';
         if (beat.coverUrl) {
           coverHtml = `<div class="beat-cover"><img src="${beat.coverUrl}" alt="cover"></div>`;
@@ -1895,7 +1924,6 @@
           playHtml = `<span class="no-audio">🎵 нет аудио</span>`;
         }
 
-        // Собираем карточку: информация слева, обложка справа вверху, плеер внизу
         card.innerHTML = `
           <div class="beat-row">
             <div class="beat-left">
