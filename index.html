@@ -9,7 +9,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    /* ===== ВЕСЬ CSS (полный) ===== */
+    /* ===== ВЕСЬ CSS (обновлённый) ===== */
     * {
       margin: 0;
       padding: 0;
@@ -515,28 +515,21 @@
       transform: scale(0.9);
     }
 
-    /* ===== НОВЫЙ ПЛЕЕР ===== */
+    /* ===== НОВЫЙ ПЛЕЕР (вертикальный: кнопка сверху, ползунок + таймер под ней) ===== */
     .audio-player {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 4px;
+      gap: 6px;
       width: 160px;
     }
 
-    .audio-controls {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      width: 100%;
-    }
-
-    .play-btn {
+    .audio-player .play-btn {
       background: transparent;
       color: var(--accent);
       border: 1px solid var(--accent);
       border-radius: 30px;
-      padding: 2px 10px;
+      padding: 2px 14px;
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
@@ -544,36 +537,44 @@
       opacity: 0.7;
       line-height: 1.6;
       flex-shrink: 0;
+      align-self: flex-start;
     }
 
-    .play-btn:hover {
+    .audio-player .play-btn:hover {
       opacity: 1;
       background: var(--accent);
       color: #fff;
       box-shadow: 0 0 20px var(--accent-glow);
     }
 
-    .play-btn.playing {
+    .audio-player .play-btn.playing {
       background: var(--accent);
       color: #fff;
       box-shadow: 0 0 30px var(--accent-glow);
     }
 
-    .play-btn:active {
+    .audio-player .play-btn:active {
       transform: scale(0.9);
     }
 
-    .progress-container {
+    .audio-player .progress-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .audio-player .progress-container {
       flex: 1;
       height: 4px;
       background: var(--secondary-text);
       border-radius: 2px;
       cursor: pointer;
       position: relative;
-      min-width: 60px;
+      min-width: 40px;
     }
 
-    .progress-bar {
+    .audio-player .progress-bar {
       height: 100%;
       width: 0%;
       background: var(--accent);
@@ -582,7 +583,7 @@
       box-shadow: 0 0 10px var(--accent-glow);
     }
 
-    .progress-container input[type="range"] {
+    .audio-player .progress-container input[type="range"] {
       position: absolute;
       top: -6px;
       left: 0;
@@ -594,7 +595,7 @@
       cursor: pointer;
     }
 
-    .time-display {
+    .audio-player .time-display {
       font-size: 11px;
       color: var(--secondary-text);
       letter-spacing: 0.3px;
@@ -614,10 +615,10 @@
       .audio-player {
         width: 140px;
       }
-      .progress-container {
-        min-width: 40px;
+      .audio-player .progress-container {
+        min-width: 30px;
       }
-      .time-display {
+      .audio-player .time-display {
         font-size: 10px;
         min-width: 60px;
       }
@@ -674,17 +675,17 @@
         width: 100%;
         align-items: stretch;
       }
-      .audio-controls {
+      .audio-player .progress-row {
         flex-wrap: wrap;
         justify-content: flex-end;
       }
-      .progress-container {
+      .audio-player .progress-container {
         flex: 1 1 100%;
-        order: 3;
-        margin-top: 2px;
+        order: 0;
       }
-      .time-display {
+      .audio-player .time-display {
         min-width: auto;
+        order: 1;
       }
     }
   </style>
@@ -752,7 +753,7 @@
     // 2. НАСТРОЙКИ CLOUDINARY
     // ============================================================
     const CLOUDINARY_CLOUD_NAME = 'drmjtipw9';
-    const CLOUDINARY_UPLOAD_PRESET = 'sokx_beats'; // или 'ml_default' для теста
+    const CLOUDINARY_UPLOAD_PRESET = 'sokx_beats';
 
     // ============================================================
     // 3. КОНФИГУРАЦИЯ FIREBASE
@@ -870,7 +871,7 @@
 
     // Глобальные переменные для управления плеером
     let currentAudio = null;
-    let currentPlayerElements = null; // { playBtn, progress, timeDisplay, progressBar, container }
+    let currentPlayerElements = null;
 
     let snackbarTimer;
 
@@ -1052,7 +1053,6 @@
         if (currentPlayerElements) {
           currentPlayerElements.playBtn.textContent = '▶ Play';
           currentPlayerElements.playBtn.classList.remove('playing');
-          // Не сбрасываем прогресс и время, чтобы осталось на том же месте
         }
       }
 
@@ -1088,7 +1088,6 @@
       });
 
       audio.addEventListener('ended', () => {
-        // Когда трек закончился, сбрасываем прогресс и меняем кнопку
         playBtn.textContent = '▶ Play';
         playBtn.classList.remove('playing');
         progressBar.style.width = '0%';
@@ -1103,7 +1102,6 @@
       });
 
       audio.addEventListener('pause', () => {
-        // Если пауза вызвана не нашим кодом (например, другой плеер), обновим кнопку
         if (currentAudio === audio && !audio.ended) {
           playBtn.textContent = '▶ Play';
           playBtn.classList.remove('playing');
@@ -1122,7 +1120,6 @@
           currentPlayerElements = null;
         });
 
-      // Обработчик ошибок
       audio.onerror = () => {
         showSnackbar('❌ Ошибка загрузки аудио');
         playBtn.textContent = '▶ Play';
@@ -1135,7 +1132,7 @@
         currentPlayerElements = null;
       };
 
-      // Обработчик перемотки (при клике на прогресс-бар или перетаскивании ползунка)
+      // Обработчик перемотки через ползунок
       const rangeInput = progressContainer.querySelector('input[type="range"]');
       if (rangeInput) {
         rangeInput.addEventListener('input', function() {
@@ -1151,9 +1148,9 @@
         });
       }
 
-      // Клик по прогресс-бару для перемотки
+      // Клик по прогресс-бару
       progressContainer.addEventListener('click', function(e) {
-        if (e.target === rangeInput) return; // уже обработано
+        if (e.target === rangeInput) return;
         const rect = this.getBoundingClientRect();
         const x = (e.clientX - rect.left) / rect.width;
         if (audio && audio.duration) {
@@ -1172,7 +1169,6 @@
       });
     }
 
-    // Форматирование времени MM:SS
     function formatTime(seconds) {
       if (isNaN(seconds) || !isFinite(seconds)) return '00:00';
       const mins = Math.floor(seconds / 60);
@@ -1255,12 +1251,10 @@
         // Блок с плеером или надписью "нет аудио"
         let playerHtml = '';
         if (beat.audioUrl) {
-          // Уникальный ID для элементов плеера
-          const uid = 'player-' + beat.id.replace(/[^a-zA-Z0-9]/g, '');
           playerHtml = `
-            <div class="audio-player" id="${uid}">
-              <div class="audio-controls">
-                <button class="play-btn" data-url="${beat.audioUrl}">▶ Play</button>
+            <div class="audio-player">
+              <button class="play-btn" data-url="${beat.audioUrl}">▶ Play</button>
+              <div class="progress-row">
                 <div class="progress-container" data-beat-id="${beat.id}">
                   <div class="progress-bar" style="width:0%"></div>
                   <input type="range" min="0" max="100" value="0" step="0.1">
@@ -1312,7 +1306,6 @@
           </div>
         `;
 
-        // Обработчик клика по карточке
         card.addEventListener('click', (e) => {
           if (e.target.closest('button')) return;
           showSnackbar(`Бит "${beat.name}" – ${statusText}`);
