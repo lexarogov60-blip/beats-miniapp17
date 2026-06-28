@@ -9,7 +9,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    /* ===== ВСЕ СТИЛИ ===== */
+    /* ===== ВСЕ СТИЛИ (ОБНОВЛЁННЫЕ) ===== */
     * {
       margin: 0;
       padding: 0;
@@ -114,7 +114,7 @@
       box-shadow: var(--glass-shadow);
     }
 
-    /* Ключик для входа (только в браузере) */
+    /* Ключик для входа (без свечения) */
     .login-key {
       font-size: 16px;
       cursor: pointer;
@@ -124,13 +124,13 @@
       user-select: none;
       padding: 2px 4px;
       border-radius: 50%;
+      /* box-shadow удалён */
     }
 
     .login-key:hover {
       opacity: 1;
       transform: scale(1.15);
       background: var(--glass-bg);
-      box-shadow: 0 0 12px var(--accent-glow);
     }
 
     .login-key:active {
@@ -371,6 +371,90 @@
       transform: scale(0.95);
     }
 
+    /* ===== ДРОПДАУН СОРТИРОВКИ ===== */
+    .sort-dropdown {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .sort-dropdown .sort-trigger {
+      background: var(--glass-bg);
+      backdrop-filter: blur(8px);
+      color: var(--secondary-text);
+      border: 1px solid var(--glass-border);
+      padding: 3px 12px;
+      border-radius: 30px;
+      font-size: 11px;
+      font-weight: 500;
+      box-shadow: var(--glass-shadow);
+      transition: 0.2s;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .sort-dropdown .sort-trigger:hover {
+      transform: scale(1.05);
+      box-shadow: var(--glass-shadow), 0 0 12px var(--accent-glow);
+    }
+
+    .sort-dropdown .sort-trigger .arrow {
+      font-size: 9px;
+      transition: transform 0.2s;
+    }
+
+    .sort-dropdown .sort-trigger .arrow.open {
+      transform: rotate(180deg);
+    }
+
+    .sort-dropdown .sort-menu {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 4px 0;
+      min-width: 130px;
+      box-shadow: var(--shadow-deep), 0 0 20px var(--accent-glow);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px);
+      transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+      z-index: 10;
+    }
+
+    .sort-dropdown:hover .sort-menu,
+    .sort-dropdown .sort-menu.open {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .sort-dropdown .sort-menu .sort-option {
+      padding: 4px 14px;
+      font-size: 11px;
+      color: var(--secondary-text);
+      cursor: pointer;
+      transition: 0.2s;
+      white-space: nowrap;
+    }
+
+    .sort-dropdown .sort-menu .sort-option:hover {
+      background: var(--accent);
+      color: #fff;
+      border-radius: 6px;
+    }
+
+    .sort-dropdown .sort-menu .sort-option.active {
+      background: var(--accent);
+      color: #fff;
+      border-radius: 6px;
+    }
+
     .beat-list {
       display: flex;
       flex-direction: column;
@@ -509,43 +593,32 @@
       justify-content: flex-end;
     }
 
+    /* ===== НОВАЯ КНОПКА PLAY (без круга, с анимацией) ===== */
     .play-btn {
       background: transparent;
-      color: var(--accent);
-      border: 1px solid var(--accent);
-      border-radius: 50%;
-      width: 28px;
-      height: 28px;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
+      border: none;
+      padding: 4px 6px;
+      font-size: 20px;
       line-height: 1;
       cursor: pointer;
-      transition: 0.2s;
+      color: var(--accent);
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s;
       opacity: 0.8;
-      box-shadow: 0 0 12px var(--accent-glow);
-      flex-shrink: 0;
-      transform: translateY(1px);
+      border-radius: 6px; /* скругление углов */
     }
 
     .play-btn:hover {
+      transform: scale(1.25);
       opacity: 1;
-      background: var(--accent);
-      color: #fff;
-      box-shadow: 0 0 20px var(--accent-glow), 0 0 40px var(--accent-glow);
-      transform: scale(1.05) translateY(1px);
     }
 
     .play-btn.playing {
-      background: var(--accent);
-      color: #fff;
-      box-shadow: 0 0 20px var(--accent-glow), 0 0 40px var(--accent-glow);
+      color: var(--accent);
+      opacity: 1;
     }
 
     .play-btn:active {
-      transform: scale(0.9) translateY(1px);
+      transform: scale(0.9);
     }
 
     .edit-btn {
@@ -856,6 +929,7 @@
       .beat-right .play-btn { align-self: center; }
       .beat-player-wrapper.expanded { max-height: 50px; }
       .modal { max-width: 100%; }
+      .sort-dropdown .sort-menu { left: auto; right: 0; }
     }
 
     @media (max-width: 380px) {
@@ -869,11 +943,13 @@
       .beat-licenses { font-size: 9px; }
       .action-btn { font-size: 9px; padding: 1px 8px; }
       .delete-btn { font-size: 9px; padding: 1px 5px; }
-      .play-btn { width: 24px; height: 24px; font-size: 14px; }
+      .play-btn { font-size: 18px; padding: 2px 4px; }
       .edit-btn { width: 20px; height: 20px; font-size: 10px; }
       .time-display { font-size: 9px; min-width: 44px; }
       .filters button { font-size: 10px; padding: 2px 10px; }
       .login-key { font-size: 14px; }
+      .sort-dropdown .sort-trigger { font-size: 10px; padding: 2px 10px; }
+      .sort-dropdown .sort-menu .sort-option { font-size: 10px; padding: 3px 12px; }
     }
   </style>
 </head>
@@ -926,6 +1002,18 @@
       <button data-filter="free">Свободно</button>
       <button data-filter="booked">Забронировано</button>
       <button data-filter="bought">Куплено</button>
+
+      <!-- Дропдаун сортировки -->
+      <div class="sort-dropdown" id="sortDropdown">
+        <div class="sort-trigger">
+          <span id="sortLabel">Сначала новые</span>
+          <span class="arrow" id="sortArrow">▾</span>
+        </div>
+        <div class="sort-menu" id="sortMenu">
+          <div class="sort-option active" data-sort="newest">Сначала новые</div>
+          <div class="sort-option" data-sort="oldest">Сначала старые</div>
+        </div>
+      </div>
     </div>
 
     <div class="beat-list" id="beatList"></div>
@@ -1004,7 +1092,7 @@
     // ============================================================
     const beatList = document.getElementById('beatList');
     const snackbar = document.getElementById('snackbar');
-    const filterButtons = document.querySelectorAll('#filterButtons button');
+    const filterButtons = document.querySelectorAll('#filterButtons button[data-filter]');
     const readonlyBanner = document.getElementById('readonlyBanner');
     const searchInput = document.getElementById('searchInput');
     const addBeatContainer = document.getElementById('addBeatContainer');
@@ -1017,6 +1105,13 @@
     const newKey = document.getElementById('newKey');
     const audioFile = document.getElementById('audioFile');
     const loginKey = document.getElementById('loginKey');
+
+    // Элементы сортировки
+    const sortOptions = document.querySelectorAll('.sort-option');
+    const sortLabel = document.getElementById('sortLabel');
+    const sortArrow = document.getElementById('sortArrow');
+    const sortMenu = document.getElementById('sortMenu');
+    let currentSort = 'newest'; // 'newest' или 'oldest'
 
     const editModal = document.getElementById('editModal');
     const editName = document.getElementById('editName');
@@ -1031,7 +1126,7 @@
     let isTelegram = false;
 
     // ============================================================
-    // 7. ОПРЕДЕЛЯЕМ СРЕДУ (Telegram или браузер) — БЕЗ АВТОМАТИЧЕСКОГО PROMPT
+    // 7. ОПРЕДЕЛЯЕМ СРЕДУ (Telegram или браузер)
     // ============================================================
     if (window.Telegram && Telegram.WebApp) {
       isTelegram = true;
@@ -1056,12 +1151,10 @@
         document.body.classList.add(webapp.colorScheme);
       });
     } else {
-      // Браузерный режим — показываем ключик
       isTelegram = false;
       isOwner = false;
       loginKey.style.display = 'inline-block';
 
-      // Определяем тему по системным настройкам
       if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         document.body.classList.add('dark');
       } else {
@@ -1485,7 +1578,40 @@
     });
 
     // ============================================================
-    // 17. РЕНДЕР СПИСКА
+    // 17. ОБРАБОТЧИКИ СОРТИРОВКИ
+    // ============================================================
+    sortOptions.forEach(option => {
+      option.addEventListener('click', function() {
+        const sort = this.dataset.sort;
+        currentSort = sort;
+        sortOptions.forEach(opt => opt.classList.remove('active'));
+        this.classList.add('active');
+        sortLabel.textContent = this.textContent;
+        // Закрываем меню (по желанию)
+        sortMenu.classList.remove('open');
+        renderBeats();
+      });
+    });
+
+    // При наведении на триггер открываем меню (уже через CSS :hover), но для мобильных можно добавить клик
+    const sortTrigger = document.querySelector('.sort-trigger');
+    sortTrigger.addEventListener('click', function(e) {
+      e.stopPropagation();
+      sortMenu.classList.toggle('open');
+      sortArrow.classList.toggle('open');
+    });
+
+    // Закрываем меню при клике вне
+    document.addEventListener('click', function(e) {
+      const dropdown = document.getElementById('sortDropdown');
+      if (!dropdown.contains(e.target)) {
+        sortMenu.classList.remove('open');
+        sortArrow.classList.remove('open');
+      }
+    });
+
+    // ============================================================
+    // 18. РЕНДЕР СПИСКА (с сортировкой)
     // ============================================================
     function renderBeats() {
       let filtered = beats;
@@ -1496,6 +1622,22 @@
       if (searchQuery.trim() !== '') {
         const q = searchQuery.trim().toLowerCase();
         filtered = filtered.filter(b => b.name.toLowerCase().includes(q));
+      }
+
+      // Сортировка
+      if (currentSort === 'newest') {
+        filtered.sort((a, b) => {
+          // Если есть поле createdAt, используем его, иначе сортируем по id (предполагаем, что Firebase id хронологические)
+          const aTime = a.createdAt || a.id;
+          const bTime = b.createdAt || b.id;
+          return aTime < bTime ? 1 : -1; // сначала новые (убывание)
+        });
+      } else {
+        filtered.sort((a, b) => {
+          const aTime = a.createdAt || a.id;
+          const bTime = b.createdAt || b.id;
+          return aTime > bTime ? 1 : -1; // сначала старые (возрастание)
+        });
       }
 
       if (filtered.length === 0) {
@@ -1643,7 +1785,7 @@
     }
 
     // ============================================================
-    // 18. ФИЛЬТРЫ И ПОИСК
+    // 19. ФИЛЬТРЫ И ПОИСК
     // ============================================================
     let currentFilter = 'all';
     let searchQuery = '';
@@ -1663,7 +1805,7 @@
     });
 
     // ============================================================
-    // 19. SNACKBAR
+    // 20. SNACKBAR
     // ============================================================
     let snackbarTimer;
 
@@ -1677,7 +1819,7 @@
     }
 
     // ============================================================
-    // 20. ПЕРВОНАЧАЛЬНЫЙ РЕНДЕР
+    // 21. ПЕРВОНАЧАЛЬНЫЙ РЕНДЕР
     // ============================================================
     renderBeats();
   </script>
