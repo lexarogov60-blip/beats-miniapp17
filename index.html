@@ -9,7 +9,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    /* ===== ВЕСЬ CSS (полный, такой же как в прошлый раз) ===== */
+    /* ===== ВЕСЬ CSS (полный) ===== */
     * {
       margin: 0;
       padding: 0;
@@ -655,13 +655,13 @@
     const OWNER_ID = 1235354532;
 
     // ============================================================
-    // 2. НАСТРОЙКИ CLOUDINARY
+    // 2. НАСТРОЙКИ CLOUDINARY (исправлено имя пресета)
     // ============================================================
     const CLOUDINARY_CLOUD_NAME = 'drmjtipw9';
-    const CLOUDINARY_UPLOAD_PRESET = 'sokk_beats';
+    const CLOUDINARY_UPLOAD_PRESET = 'sokx_beats';  // ← ИСПРАВЛЕНО
 
     // ============================================================
-    // 3. КОНФИГУРАЦИЯ FIREBASE (только база данных)
+    // 3. КОНФИГУРАЦИЯ FIREBASE
     // ============================================================
     const firebaseConfig = {
       apiKey: "AIzaSyBNYZQnPSo0O8tZT9vo4uOYKVS6_PSmNy4",
@@ -720,10 +720,9 @@
     let isOwner = false;
 
     // ============================================================
-    // 7. ОПРЕДЕЛЯЕМ ВЛАДЕЛЬЦА (с разделением на Telegram и браузер)
+    // 7. ОПРЕДЕЛЯЕМ ВЛАДЕЛЬЦА
     // ============================================================
     if (window.Telegram && Telegram.WebApp) {
-      // === TELEGRAM MINI APP ===
       const webapp = Telegram.WebApp;
       webapp.ready();
       webapp.expand();
@@ -745,7 +744,7 @@
         document.body.classList.add(webapp.colorScheme);
       });
     } else {
-      // === БРАУЗЕРНЫЙ РЕЖИМ (запрос ID через prompt) ===
+      // Браузерный режим — запрос ID
       const input = prompt('Введите ваш Telegram ID (если вы владелец) или нажмите "Отмена" для гостевого режима:');
       if (input && !isNaN(input)) {
         const id = parseInt(input);
@@ -759,7 +758,6 @@
         isOwner = false;
         alert('Вы в гостевом режиме.');
       }
-      // Определяем тему по системным настройкам
       if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         document.body.classList.add('dark');
       } else {
@@ -789,13 +787,14 @@
     }
 
     // ============================================================
-    // 8. ЗАГРУЗКА АУДИО В CLOUDINARY
+    // 8. ЗАГРУЗКА АУДИО В CLOUDINARY (с обработкой ошибок)
     // ============================================================
     function uploadAudioToCloudinary(file) {
       return new Promise((resolve, reject) => {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+        formData.append('resource_type', 'auto');
 
         const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`;
 
@@ -803,11 +802,19 @@
           method: 'POST',
           body: formData
         })
-        .then(response => {
+        .then(async response => {
+          const text = await response.text();
           if (!response.ok) {
-            throw new Error(`Ошибка загрузки: ${response.status}`);
+            let errorMsg = `Ошибка ${response.status}: `;
+            try {
+              const json = JSON.parse(text);
+              errorMsg += json.error?.message || text;
+            } catch {
+              errorMsg += text;
+            }
+            throw new Error(errorMsg);
           }
-          return response.json();
+          return JSON.parse(text);
         })
         .then(data => {
           if (data.secure_url) {
@@ -821,7 +828,7 @@
     }
 
     // ============================================================
-    // 9. ДОБАВЛЕНИЕ БИТА (с загрузкой аудио в Cloudinary)
+    // 9. ДОБАВЛЕНИЕ БИТА
     // ============================================================
     function addBeat() {
       if (!isOwner) {
@@ -864,11 +871,11 @@
             resetForm();
           })
           .catch(err => {
-            showSnackbar('Ошибка загрузки аудио: ' + err.message);
-            console.error(err);
+            const msg = err.message || 'Неизвестная ошибка';
+            showSnackbar('Ошибка загрузки: ' + msg);
+            console.error('Ошибка Cloudinary:', err);
           });
       } else {
-        // Без аудио
         beatsRef.push(newBeat)
           .then(() => {
             showSnackbar(`Бит "${name}" добавлен!`);
