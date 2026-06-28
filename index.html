@@ -369,7 +369,7 @@
       transform: scale(0.95);
     }
 
-    /* ===== ДРОПДАУН СОРТИРОВКИ (со скруглениями) ===== */
+    /* ===== ДРОПДАУН СОРТИРОВКИ (стеклянная заливка) ===== */
     .sort-dropdown {
       position: relative;
       display: inline-block;
@@ -439,19 +439,24 @@
       cursor: pointer;
       transition: 0.2s;
       white-space: nowrap;
-      border-radius: 6px; /* скругление для пунктов */
+      border-radius: 6px;
+      margin: 0 4px; /* небольшой отступ, чтобы скругления смотрелись аккуратнее */
     }
 
     .sort-dropdown .sort-menu .sort-option:hover {
-      background: var(--accent);
-      color: #fff;
+      background: rgba(168, 85, 247, 0.15); /* полупрозрачный фиолетовый */
+      backdrop-filter: blur(4px);
+      color: var(--text);
     }
 
     .sort-dropdown .sort-menu .sort-option.active {
-      background: var(--accent);
-      color: #fff;
+      background: rgba(168, 85, 247, 0.2);
+      backdrop-filter: blur(4px);
+      color: var(--text);
+      box-shadow: 0 0 12px var(--accent-glow);
     }
 
+    /* ===== КАРТОЧКА БИТА (обложка слева) ===== */
     .beat-list {
       display: flex;
       flex-direction: column;
@@ -486,18 +491,51 @@
 
     .beat-row {
       display: flex;
-      justify-content: space-between;
       align-items: center;
       width: 100%;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
+    /* Обложка слева */
+    .beat-cover {
+      flex: 0 0 60px;
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: var(--secondary-text);
+      order: 0; /* первая */
+    }
+
+    .beat-cover:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .beat-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Информация о бите */
     .beat-left {
       display: flex;
       flex-direction: column;
       gap: 2px;
-      flex: 1 1 60%;
+      flex: 1 1 50%;
       min-width: 0;
+      order: 1; /* вторая */
     }
 
     .beat-name {
@@ -573,43 +611,15 @@
       text-shadow: 0 0 8px var(--accent-glow);
     }
 
-    .beat-cover {
-      flex: 0 0 50px;
-      width: 50px;
-      height: 50px;
-      border-radius: 10px;
-      overflow: hidden;
-      margin-left: 8px;
-      flex-shrink: 0;
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      color: var(--secondary-text);
-    }
-
-    .beat-cover:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 12px var(--accent-glow);
-    }
-
-    .beat-cover img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
     .beat-right {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
       gap: 4px;
-      flex: 0 1 35%;
-      max-width: 40%;
+      flex: 0 1 30%;
+      max-width: 30%;
+      order: 2; /* третья */
+      margin-left: auto;
     }
 
     .beat-actions {
@@ -1041,10 +1051,10 @@
     }
 
     @media (max-width: 480px) {
-      .beat-left { flex: 1 1 100%; }
-      .beat-right { flex: 1 1 100%; align-items: stretch; max-width: 100%; }
+      .beat-cover { flex: 0 0 50px; width: 50px; height: 50px; }
+      .beat-left { flex: 1 1 100%; order: 1; }
+      .beat-right { flex: 1 1 100%; order: 2; max-width: 100%; align-items: flex-start; }
       .beat-right .play-btn { align-self: center; }
-      .beat-cover { width: 40px; height: 40px; margin-left: 6px; }
       .beat-player-wrapper.expanded { max-height: 50px; }
       .modal { max-width: 100%; }
       .sort-dropdown .sort-menu { left: auto; right: 0; }
@@ -1059,7 +1069,7 @@
       .beat-details { font-size: 10px; }
       .beat-status { font-size: 10px; }
       .beat-licenses { font-size: 9px; }
-      .beat-cover { width: 36px; height: 36px; }
+      .beat-cover { flex: 0 0 44px; width: 44px; height: 44px; font-size: 20px; }
       .action-btn { font-size: 9px; padding: 1px 8px; }
       .delete-btn { font-size: 9px; padding: 1px 5px; }
       .play-btn { font-size: 18px; padding: 2px 4px; }
@@ -1517,13 +1527,10 @@
     function deleteCover() {
       if (!isOwner || !editingBeatId) return;
       if (!confirm('Удалить обложку этого бита?')) return;
-      // Удаляем поле coverUrl в базе
       beatsRef.child(editingBeatId).update({ coverUrl: null })
         .then(() => {
           showSnackbar('Обложка удалена');
-          // Скрываем превью
           editCoverPreview.style.display = 'none';
-          // Обновляем список
           renderBeats();
         })
         .catch(err => showSnackbar('Ошибка: ' + err.message));
@@ -1817,7 +1824,7 @@
     });
 
     // ============================================================
-    // 18. РЕНДЕР СПИСКА (с обложками)
+    // 18. РЕНДЕР СПИСКА (с обложками слева)
     // ============================================================
     function renderBeats() {
       let filtered = beats;
@@ -1873,6 +1880,7 @@
           </div>
         `;
 
+        // Обложка
         let coverHtml = '';
         if (beat.coverUrl) {
           coverHtml = `<div class="beat-cover"><img src="${beat.coverUrl}" alt="cover"></div>`;
@@ -1926,6 +1934,7 @@
 
         card.innerHTML = `
           <div class="beat-row">
+            ${coverHtml}
             <div class="beat-left">
               <div class="beat-name">${beat.name}</div>
               <div class="beat-details">
@@ -1938,10 +1947,7 @@
               </div>
               ${licensesHtml}
             </div>
-            <div style="display:flex; align-items:center; gap:4px; flex-wrap:wrap; justify-content:flex-end;">
-              ${coverHtml}
-            </div>
-            <div class="beat-right" style="flex:1; align-items:flex-end;">
+            <div class="beat-right">
               ${playHtml}
               ${actionsHtml}
             </div>
