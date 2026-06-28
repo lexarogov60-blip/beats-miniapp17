@@ -9,7 +9,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    /* ===== ОБЩИЕ СТИЛИ (уменьшены отступы и шрифты) ===== */
+    /* ===== ОБЩИЕ СТИЛИ (ещё более компактные) ===== */
     * {
       margin: 0;
       padding: 0;
@@ -19,7 +19,7 @@
 
     body {
       min-height: 100vh;
-      padding: 12px 10px 30px;
+      padding: 10px 12px 30px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -33,7 +33,7 @@
       --text: #1a1a1e;
       --glass-bg: rgba(255, 255, 255, 0.45);
       --glass-border: rgba(255, 255, 255, 0.5);
-      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+      --glass-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
       --secondary-text: #4a4a52;
       --accent: #8b5cf6;
       --accent-glow: rgba(139, 92, 246, 0.25);
@@ -41,7 +41,7 @@
       --input-bg: rgba(255, 255, 255, 0.5);
       --dot-shadow: rgba(0,0,0,0.1);
       --delete-color: #e74c3c;
-      --shadow-deep: 0 10px 40px rgba(0, 0, 0, 0.15);
+      --shadow-deep: 0 4px 20px rgba(0, 0, 0, 0.08);
     }
 
     body.dark {
@@ -49,7 +49,7 @@
       --text: #f0f0f5;
       --glass-bg: rgba(20, 20, 30, 0.55);
       --glass-border: rgba(255, 255, 255, 0.08);
-      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      --glass-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
       --secondary-text: #a0a0b0;
       --accent: #a855f7;
       --accent-glow: rgba(168, 85, 247, 0.3);
@@ -57,14 +57,15 @@
       --input-bg: rgba(30, 30, 42, 0.5);
       --dot-shadow: rgba(0,0,0,0.3);
       --delete-color: #ef5350;
-      --shadow-deep: 0 10px 40px rgba(0, 0, 0, 0.6);
+      --shadow-deep: 0 4px 20px rgba(0, 0, 0, 0.5);
     }
 
     .container {
       width: 100%;
-      max-width: 600px;
+      max-width: 440px;  /* ← уменьшено */
       display: flex;
       flex-direction: column;
+      margin: 0 auto;
     }
 
     .header {
@@ -76,7 +77,7 @@
 
     .header h1 {
       font-family: 'Permanent Marker', cursive;
-      font-size: 30px;
+      font-size: 28px;
       font-weight: 400;
       letter-spacing: 1px;
       background: linear-gradient(135deg, var(--accent), #6b21a5);
@@ -86,8 +87,7 @@
       text-shadow: 
         2px 2px 0 rgba(0, 0, 0, 0.2),
         4px 4px 0 rgba(0, 0, 0, 0.15),
-        6px 6px 0 rgba(0, 0, 0, 0.1),
-        0 0 40px var(--accent-glow);
+        0 0 30px var(--accent-glow);
       transform: rotate(-0.5deg) scale(1.01);
       transition: transform 0.3s ease;
     }
@@ -109,26 +109,26 @@
     }
 
     .greeting {
-      margin-bottom: 16px;
+      margin-bottom: 12px;
     }
 
     .greeting h2 {
       font-family: 'Permanent Marker', cursive;
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 400;
       letter-spacing: 0.5px;
       color: #ffffff;
       text-shadow: 
         1px 1px 0 rgba(0, 0, 0, 0.2),
         3px 3px 0 rgba(0, 0, 0, 0.15),
-        0 0 40px rgba(255, 255, 255, 0.4),
-        0 0 80px rgba(255, 255, 255, 0.2);
+        0 0 30px rgba(255, 255, 255, 0.4),
+        0 0 60px rgba(255, 255, 255, 0.2);
       transform: rotate(-0.3deg);
       margin-bottom: 2px;
     }
 
     .greeting p {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 400;
       color: var(--secondary-text);
       letter-spacing: 0.1px;
@@ -136,18 +136,18 @@
     }
 
     .search-container {
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .search-container input {
       width: 100%;
-      padding: 8px 14px;
+      padding: 6px 12px;
       border-radius: 30px;
       border: 1px solid var(--glass-border);
       background: var(--input-bg);
       backdrop-filter: blur(8px);
       color: var(--text);
-      font-size: 13px;
+      font-size: 12px;
       outline: none;
       transition: 0.3s;
       box-shadow: var(--glass-shadow), 0 0 0 0 var(--accent-glow);
@@ -155,7 +155,7 @@
 
     .search-container input:focus {
       border-color: var(--accent);
-      box-shadow: var(--glass-shadow), 0 0 20px var(--accent-glow);
+      box-shadow: var(--glass-shadow), 0 0 16px var(--accent-glow);
     }
 
     .add-beat-btn {
@@ -164,13 +164,13 @@
       color: #fff;
       border: none;
       border-radius: 30px;
-      padding: 6px 16px;
-      font-size: 13px;
+      padding: 4px 14px;
+      font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       transition: 0.3s;
-      box-shadow: 0 0 20px var(--accent-glow), 0 4px 15px rgba(0,0,0,0.2);
-      margin-bottom: 10px;
+      box-shadow: 0 0 16px var(--accent-glow), 0 2px 8px rgba(0,0,0,0.15);
+      margin-bottom: 8px;
     }
 
     .add-beat-btn:active {
@@ -181,13 +181,13 @@
       background: var(--glass-bg);
       backdrop-filter: blur(16px);
       border: 1px solid var(--glass-border);
-      border-radius: 16px;
-      padding: 12px 14px;
-      margin-bottom: 12px;
-      box-shadow: var(--shadow-deep), 0 0 30px var(--accent-glow);
+      border-radius: 14px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      box-shadow: var(--shadow-deep), 0 0 20px var(--accent-glow);
       display: none;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
     }
 
     .add-form.visible {
@@ -196,47 +196,12 @@
 
     .add-form .form-row {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       flex-wrap: wrap;
     }
 
     .add-form .form-row input {
       flex: 1;
-      padding: 8px 12px;
-      border-radius: 30px;
-      border: 1px solid var(--glass-border);
-      background: var(--input-bg);
-      backdrop-filter: blur(4px);
-      color: var(--text);
-      font-size: 13px;
-      outline: none;
-      transition: 0.3s;
-      min-width: 80px;
-      box-shadow: inset 0 2px 6px rgba(0,0,0,0.05);
-    }
-
-    .add-form .form-row input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 15px var(--accent-glow), inset 0 2px 6px rgba(0,0,0,0.05);
-    }
-
-    .add-form .form-row input::placeholder {
-      color: var(--secondary-text);
-    }
-
-    .add-form .file-row {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .add-form .file-row label {
-      font-size: 12px;
-      color: var(--secondary-text);
-      font-weight: 500;
-    }
-
-    .add-form .file-row input[type="file"] {
       padding: 6px 10px;
       border-radius: 30px;
       border: 1px solid var(--glass-border);
@@ -246,12 +211,47 @@
       font-size: 12px;
       outline: none;
       transition: 0.3s;
+      min-width: 70px;
+      box-shadow: inset 0 1px 4px rgba(0,0,0,0.05);
+    }
+
+    .add-form .form-row input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 12px var(--accent-glow), inset 0 1px 4px rgba(0,0,0,0.05);
+    }
+
+    .add-form .form-row input::placeholder {
+      color: var(--secondary-text);
+    }
+
+    .add-form .file-row {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .add-form .file-row label {
+      font-size: 11px;
+      color: var(--secondary-text);
+      font-weight: 500;
+    }
+
+    .add-form .file-row input[type="file"] {
+      padding: 4px 8px;
+      border-radius: 30px;
+      border: 1px solid var(--glass-border);
+      background: var(--input-bg);
+      backdrop-filter: blur(4px);
+      color: var(--text);
+      font-size: 11px;
+      outline: none;
+      transition: 0.3s;
       cursor: pointer;
     }
 
     .add-form .file-row input[type="file"]:focus {
       border-color: var(--accent);
-      box-shadow: 0 0 15px var(--accent-glow);
+      box-shadow: 0 0 12px var(--accent-glow);
     }
 
     .add-form .file-row input[type="file"]::file-selector-button {
@@ -259,12 +259,12 @@
       color: #fff;
       border: none;
       border-radius: 30px;
-      padding: 2px 12px;
-      font-size: 11px;
+      padding: 2px 10px;
+      font-size: 10px;
       font-weight: 600;
       cursor: pointer;
       transition: 0.2s;
-      margin-right: 10px;
+      margin-right: 8px;
     }
 
     .add-form .file-row input[type="file"]::file-selector-button:hover {
@@ -273,25 +273,25 @@
 
     .add-form .form-actions {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       justify-content: flex-end;
     }
 
     .add-form .form-actions button {
-      padding: 6px 16px;
+      padding: 4px 14px;
       border-radius: 30px;
       border: none;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       transition: 0.2s;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
     }
 
     .add-form .form-actions .submit-btn {
       background: var(--accent);
       color: #fff;
-      box-shadow: 0 0 20px var(--accent-glow), 0 4px 15px rgba(0,0,0,0.2);
+      box-shadow: 0 0 16px var(--accent-glow), 0 2px 8px rgba(0,0,0,0.1);
     }
 
     .add-form .form-actions .cancel-btn {
@@ -306,8 +306,8 @@
 
     .filters {
       display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
+      gap: 6px;
+      margin-bottom: 12px;
       flex-wrap: wrap;
       justify-content: center;
     }
@@ -317,9 +317,9 @@
       backdrop-filter: blur(8px);
       color: var(--secondary-text);
       border: 1px solid var(--glass-border);
-      padding: 4px 14px;
+      padding: 3px 12px;
       border-radius: 30px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 500;
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s ease, color 0.3s;
@@ -330,12 +330,12 @@
       background: var(--accent);
       color: #fff;
       border-color: var(--accent);
-      box-shadow: 0 0 30px var(--accent-glow), 0 4px 15px rgba(0,0,0,0.2);
+      box-shadow: 0 0 20px var(--accent-glow), 0 2px 8px rgba(0,0,0,0.1);
     }
 
     .filters button:hover {
       transform: scale(1.05);
-      box-shadow: var(--glass-shadow), 0 0 20px var(--accent-glow);
+      box-shadow: var(--glass-shadow), 0 0 12px var(--accent-glow);
     }
 
     .filters button:active {
@@ -345,7 +345,7 @@
     .beat-list {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       width: 100%;
     }
 
@@ -353,14 +353,14 @@
       background: var(--glass-bg);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border-radius: 14px;
-      padding: 10px 12px;
+      border-radius: 12px;
+      padding: 8px 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       border: 1px solid var(--glass-border);
       box-shadow: var(--shadow-deep), 0 0 0 0 var(--accent-glow);
-      transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
       cursor: default;
       width: 100%;
       flex-wrap: wrap;
@@ -369,7 +369,7 @@
     .beat-card:hover {
       transform: scale(1.01);
       background: var(--card-hover-bg);
-      box-shadow: var(--shadow-deep), 0 0 30px var(--accent-glow);
+      box-shadow: var(--shadow-deep), 0 0 20px var(--accent-glow);
     }
 
     .beat-card:active {
@@ -379,46 +379,46 @@
     .beat-left {
       display: flex;
       flex-direction: column;
-      gap: 3px;
-      flex: 1 1 60%;
+      gap: 2px;
+      flex: 1 1 55%;
       min-width: 0;
     }
 
     .beat-name {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 600;
-      text-shadow: 0 0 12px var(--accent-glow);
+      text-shadow: 0 0 10px var(--accent-glow);
     }
 
     .beat-details {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--secondary-text);
       display: flex;
-      gap: 8px;
+      gap: 6px;
       flex-wrap: wrap;
     }
 
     .beat-details span {
       display: flex;
       align-items: center;
-      gap: 3px;
+      gap: 2px;
     }
 
     .beat-status {
       display: flex;
       align-items: center;
-      gap: 5px;
-      font-size: 12px;
+      gap: 4px;
+      font-size: 11px;
       font-weight: 500;
-      margin-top: 2px;
+      margin-top: 1px;
     }
 
     .status-dot {
-      width: 10px;
-      height: 10px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       display: inline-block;
-      box-shadow: 0 0 8px var(--dot-shadow);
+      box-shadow: 0 0 6px var(--dot-shadow);
     }
 
     .status-dot.free { background: #22c55e; }
@@ -428,9 +428,9 @@
     .beat-licenses {
       display: flex;
       flex-direction: column;
-      gap: 2px;
-      margin-top: 4px;
-      font-size: 11px;
+      gap: 1px;
+      margin-top: 2px;
+      font-size: 10px;
       color: var(--secondary-text);
       letter-spacing: 0.1px;
     }
@@ -438,27 +438,27 @@
     .beat-licenses .license-item {
       display: flex;
       align-items: baseline;
-      gap: 4px;
+      gap: 3px;
     }
 
     .beat-licenses .license-item .price {
       font-weight: 600;
       color: var(--accent);
-      text-shadow: 0 0 12px var(--accent-glow);
+      text-shadow: 0 0 10px var(--accent-glow);
     }
 
     .beat-right {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 6px;
-      flex: 0 0 auto;
+      gap: 4px;
+      flex: 0 1 40%;
       max-width: 45%;
     }
 
     .beat-actions {
       display: flex;
-      gap: 6px;
+      gap: 4px;
       align-items: center;
       flex-wrap: wrap;
       justify-content: flex-end;
@@ -469,12 +469,12 @@
       color: #fff;
       border: none;
       border-radius: 30px;
-      padding: 4px 12px;
-      font-size: 11px;
+      padding: 2px 10px;
+      font-size: 10px;
       font-weight: 600;
       cursor: pointer;
       transition: 0.2s;
-      box-shadow: 0 0 16px var(--accent-glow), 0 2px 8px rgba(0,0,0,0.15);
+      box-shadow: 0 0 12px var(--accent-glow), 0 1px 4px rgba(0,0,0,0.1);
     }
 
     .action-btn:active {
@@ -483,7 +483,7 @@
 
     .action-btn.bought-btn {
       background: #ef4444;
-      box-shadow: 0 0 16px rgba(239, 68, 68, 0.3), 0 2px 8px rgba(0,0,0,0.15);
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.3), 0 1px 4px rgba(0,0,0,0.1);
     }
 
     .action-btn:disabled {
@@ -498,21 +498,21 @@
       color: var(--delete-color);
       border: 1px solid var(--delete-color);
       border-radius: 30px;
-      padding: 2px 8px;
-      font-size: 12px;
+      padding: 1px 6px;
+      font-size: 10px;
       font-weight: 600;
       cursor: pointer;
       transition: 0.2s;
       opacity: 0.6;
-      line-height: 1.4;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      line-height: 1.5;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
     }
 
     .delete-btn:hover {
       opacity: 1;
       background: var(--delete-color);
       color: #fff;
-      box-shadow: 0 0 16px rgba(239, 68, 68, 0.3);
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
     }
 
     .delete-btn:active {
@@ -524,9 +524,9 @@
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 4px;
+      gap: 3px;
       width: 100%;
-      max-width: 150px;
+      max-width: 130px;
     }
 
     .audio-player .play-btn {
@@ -534,13 +534,13 @@
       color: var(--accent);
       border: 1px solid var(--accent);
       border-radius: 30px;
-      padding: 1px 10px;
-      font-size: 12px;
+      padding: 1px 8px;
+      font-size: 10px;
       font-weight: 600;
       cursor: pointer;
       transition: 0.2s;
       opacity: 0.7;
-      line-height: 1.5;
+      line-height: 1.6;
       align-self: flex-start;
     }
 
@@ -548,13 +548,13 @@
       opacity: 1;
       background: var(--accent);
       color: #fff;
-      box-shadow: 0 0 16px var(--accent-glow);
+      box-shadow: 0 0 12px var(--accent-glow);
     }
 
     .audio-player .play-btn.playing {
       background: var(--accent);
       color: #fff;
-      box-shadow: 0 0 20px var(--accent-glow);
+      box-shadow: 0 0 16px var(--accent-glow);
     }
 
     .audio-player .play-btn:active {
@@ -564,7 +564,7 @@
     .audio-player .progress-row {
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
       width: 100%;
     }
 
@@ -584,7 +584,7 @@
       background: var(--accent);
       border-radius: 2px;
       transition: width 0.1s linear;
-      box-shadow: 0 0 8px var(--accent-glow);
+      box-shadow: 0 0 6px var(--accent-glow);
     }
 
     .audio-player .progress-container input[type="range"] {
@@ -592,7 +592,7 @@
       top: -5px;
       left: 0;
       width: 100%;
-      height: 13px;
+      height: 12px;
       margin: 0;
       padding: 0;
       opacity: 0;
@@ -600,17 +600,17 @@
     }
 
     .audio-player .time-display {
-      font-size: 10px;
+      font-size: 9px;
       color: var(--secondary-text);
       letter-spacing: 0.2px;
       font-variant-numeric: tabular-nums;
       flex-shrink: 0;
-      min-width: 60px;
+      min-width: 54px;
       text-align: right;
     }
 
     .no-audio {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--secondary-text);
       opacity: 0.5;
     }
@@ -623,16 +623,16 @@
       background: var(--glass-bg);
       backdrop-filter: blur(16px);
       color: var(--text);
-      padding: 8px 20px;
+      padding: 6px 18px;
       border-radius: 30px;
-      font-size: 13px;
+      font-size: 12px;
       opacity: 0;
       transition: opacity 0.3s;
       pointer-events: none;
       z-index: 200;
       white-space: nowrap;
       border: 1px solid var(--glass-border);
-      box-shadow: var(--shadow-deep), 0 0 30px var(--accent-glow);
+      box-shadow: var(--shadow-deep), 0 0 20px var(--accent-glow);
     }
 
     .snackbar.show {
@@ -644,16 +644,17 @@
       backdrop-filter: blur(8px);
       border: 1px solid var(--glass-border);
       border-radius: 10px;
-      padding: 8px 12px;
-      margin-bottom: 14px;
+      padding: 6px 10px;
+      margin-bottom: 10px;
       text-align: center;
-      font-size: 12px;
+      font-size: 11px;
       color: var(--secondary-text);
       box-shadow: var(--shadow-deep);
       width: 100%;
     }
 
-    @media (max-width: 500px) {
+    @media (max-width: 480px) {
+      .container { max-width: 100%; padding: 0 4px; }
       .beat-left { flex: 1 1 100%; }
       .beat-right { flex: 1 1 100%; align-items: stretch; max-width: 100%; }
       .audio-player { max-width: 100%; }
@@ -663,20 +664,20 @@
       .audio-player .time-display { order: 1; min-width: auto; }
     }
 
-    @media (max-width: 400px) {
-      .header h1 { font-size: 26px; }
-      .greeting h2 { font-size: 20px; }
-      .greeting p { font-size: 13px; }
-      .beat-card { padding: 8px 10px; }
-      .beat-name { font-size: 14px; }
-      .beat-details { font-size: 11px; }
-      .beat-status { font-size: 11px; }
-      .beat-licenses { font-size: 10px; }
-      .action-btn { font-size: 10px; padding: 2px 10px; }
-      .delete-btn { font-size: 11px; padding: 1px 6px; }
-      .audio-player .play-btn { font-size: 11px; padding: 1px 8px; }
-      .audio-player .time-display { font-size: 9px; min-width: 50px; }
-      .add-form .form-row { flex-direction: column; }
+    @media (max-width: 380px) {
+      .header h1 { font-size: 24px; }
+      .greeting h2 { font-size: 19px; }
+      .greeting p { font-size: 12px; }
+      .beat-card { padding: 6px 8px; }
+      .beat-name { font-size: 13px; }
+      .beat-details { font-size: 10px; }
+      .beat-status { font-size: 10px; }
+      .beat-licenses { font-size: 9px; }
+      .action-btn { font-size: 9px; padding: 1px 8px; }
+      .delete-btn { font-size: 9px; padding: 1px 5px; }
+      .audio-player .play-btn { font-size: 9px; padding: 1px 7px; }
+      .audio-player .time-display { font-size: 8px; min-width: 44px; }
+      .filters button { font-size: 10px; padding: 2px 10px; }
     }
   </style>
 </head>
@@ -707,12 +708,12 @@
 
     <div class="add-form" id="addForm">
       <div class="form-row">
-        <input type="text" id="newName" placeholder="Название бита" autocomplete="off">
+        <input type="text" id="newName" placeholder="Название" autocomplete="off">
         <input type="number" id="newBpm" placeholder="BPM" autocomplete="off">
         <input type="text" id="newKey" placeholder="Тональность" autocomplete="off">
       </div>
       <div class="file-row">
-        <label for="audioFile">🎵 Загрузить MP3 (необязательно)</label>
+        <label for="audioFile">🎵 MP3 (необязательно)</label>
         <input type="file" id="audioFile" accept="audio/*">
       </div>
       <div class="form-actions">
@@ -870,7 +871,7 @@
       clearTimeout(snackbarTimer);
       snackbarTimer = setTimeout(() => {
         snackbar.classList.remove('show');
-      }, 2500);
+      }, 2000);
     }
 
     // ============================================================
@@ -944,7 +945,7 @@
 
       const file = audioFile.files[0];
       if (file) {
-        showSnackbar('⏳ Загрузка аудио в Cloudinary...');
+        showSnackbar('⏳ Загрузка аудио...');
         uploadAudioToCloudinary(file)
           .then(audioUrl => {
             newBeat.audioUrl = audioUrl;
@@ -1202,7 +1203,7 @@
       }
 
       if (filtered.length === 0) {
-        beatList.innerHTML = `<div style="text-align:center;color:var(--secondary-text);padding:30px 0;">Нет битов, соответствующих запросу</div>`;
+        beatList.innerHTML = `<div style="text-align:center;color:var(--secondary-text);padding:20px 0;font-size:13px;">Нет битов, соответствующих запросу</div>`;
         return;
       }
 
@@ -1220,11 +1221,11 @@
         const licensesHtml = `
           <div class="beat-licenses">
             <div class="license-item">
-              <span>Wav / Non-Exclusive License</span>
+              <span>Wav / Non-Exclusive</span>
               <span class="price">— ${beat.nonExcl}₽</span>
             </div>
             <div class="license-item">
-              <span>Wav / Exclusive License</span>
+              <span>Wav / Exclusive</span>
               <span class="price">— ${beat.excl}₽</span>
             </div>
           </div>
