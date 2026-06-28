@@ -9,7 +9,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    /* ===== ВСЕ СТИЛИ (ОБНОВЛЁННЫЕ) ===== */
+    /* ===== ВСЕ СТИЛИ (обновлённые) ===== */
     * {
       margin: 0;
       padding: 0;
@@ -124,7 +124,6 @@
       user-select: none;
       padding: 2px 4px;
       border-radius: 50%;
-      /* box-shadow удалён */
     }
 
     .login-key:hover {
@@ -371,7 +370,7 @@
       transform: scale(0.95);
     }
 
-    /* ===== ДРОПДАУН СОРТИРОВКИ ===== */
+    /* ===== ДРОПДАУН СОРТИРОВКИ (исправлен) ===== */
     .sort-dropdown {
       position: relative;
       display: inline-block;
@@ -441,18 +440,18 @@
       cursor: pointer;
       transition: 0.2s;
       white-space: nowrap;
+      border-radius: 0; /* убираем фон по умолчанию */
     }
 
     .sort-dropdown .sort-menu .sort-option:hover {
       background: var(--accent);
       color: #fff;
-      border-radius: 6px;
+      /* заливка только при наведении на пункт */
     }
 
     .sort-dropdown .sort-menu .sort-option.active {
       background: var(--accent);
       color: #fff;
-      border-radius: 6px;
     }
 
     .beat-list {
@@ -576,6 +575,37 @@
       text-shadow: 0 0 8px var(--accent-glow);
     }
 
+    /* ===== КОНТЕЙНЕР ДЛЯ ОБЛОЖКИ ===== */
+    .beat-cover {
+      flex: 0 0 50px;
+      width: 50px;
+      height: 50px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-left: 8px;
+      flex-shrink: 0;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: var(--secondary-text);
+    }
+
+    .beat-cover:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .beat-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
     .beat-right {
       display: flex;
       flex-direction: column;
@@ -593,7 +623,7 @@
       justify-content: flex-end;
     }
 
-    /* ===== НОВАЯ КНОПКА PLAY (без круга, с анимацией) ===== */
+    /* ===== КНОПКА PLAY (без круга, с анимацией) ===== */
     .play-btn {
       background: transparent;
       border: none;
@@ -604,7 +634,7 @@
       color: var(--accent);
       transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s;
       opacity: 0.8;
-      border-radius: 6px; /* скругление углов */
+      border-radius: 6px;
     }
 
     .play-btn:hover {
@@ -782,6 +812,7 @@
       opacity: 0.5;
     }
 
+    /* ===== МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ (с обложкой) ===== */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -827,7 +858,8 @@
       margin-bottom: 12px;
     }
 
-    .modal .form-row input {
+    .modal .form-row input[type="text"],
+    .modal .form-row input[type="number"] {
       padding: 8px 12px;
       border-radius: 30px;
       border: 1px solid var(--glass-border);
@@ -844,10 +876,79 @@
       box-shadow: 0 0 16px var(--accent-glow);
     }
 
+    .modal .file-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    .modal .file-row label {
+      font-size: 12px;
+      color: var(--secondary-text);
+      font-weight: 500;
+    }
+
+    .modal .file-row input[type="file"] {
+      padding: 4px 8px;
+      border-radius: 30px;
+      border: 1px solid var(--glass-border);
+      background: var(--input-bg);
+      backdrop-filter: blur(4px);
+      color: var(--text);
+      font-size: 12px;
+      outline: none;
+      transition: 0.3s;
+      cursor: pointer;
+    }
+
+    .modal .file-row input[type="file"]:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .modal .file-row input[type="file"]::file-selector-button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      padding: 2px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-right: 8px;
+    }
+
+    .modal .file-row input[type="file"]::file-selector-button:hover {
+      opacity: 0.8;
+    }
+
+    .modal .cover-preview {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .modal .cover-preview img {
+      width: 50px;
+      height: 50px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 1px solid var(--glass-border);
+    }
+
+    .modal .cover-preview span {
+      font-size: 12px;
+      color: var(--secondary-text);
+    }
+
     .modal .form-actions {
       display: flex;
       gap: 8px;
       justify-content: flex-end;
+      margin-top: 8px;
     }
 
     .modal .form-actions button {
@@ -927,6 +1028,7 @@
       .beat-left { flex: 1 1 100%; }
       .beat-right { flex: 1 1 100%; align-items: stretch; max-width: 100%; }
       .beat-right .play-btn { align-self: center; }
+      .beat-cover { width: 40px; height: 40px; margin-left: 6px; }
       .beat-player-wrapper.expanded { max-height: 50px; }
       .modal { max-width: 100%; }
       .sort-dropdown .sort-menu { left: auto; right: 0; }
@@ -941,6 +1043,7 @@
       .beat-details { font-size: 10px; }
       .beat-status { font-size: 10px; }
       .beat-licenses { font-size: 9px; }
+      .beat-cover { width: 36px; height: 36px; }
       .action-btn { font-size: 9px; padding: 1px 8px; }
       .delete-btn { font-size: 9px; padding: 1px 5px; }
       .play-btn { font-size: 18px; padding: 2px 4px; }
@@ -981,6 +1084,7 @@
       <button class="add-beat-btn" id="toggleAddFormBtn">➕ Добавить бит</button>
     </div>
 
+    <!-- Форма добавления бита -->
     <div class="add-form" id="addForm">
       <div class="form-row">
         <input type="text" id="newName" placeholder="Название" autocomplete="off">
@@ -990,6 +1094,10 @@
       <div class="file-row">
         <label for="audioFile">🎵 MP3 (необязательно)</label>
         <input type="file" id="audioFile" accept="audio/*">
+      </div>
+      <div class="file-row">
+        <label for="coverFile">🖼️ Обложка (необязательно)</label>
+        <input type="file" id="coverFile" accept="image/*">
       </div>
       <div class="form-actions">
         <button class="cancel-btn" id="cancelAddBtn">Отмена</button>
@@ -1026,6 +1134,14 @@
           <input type="text" id="editName" placeholder="Название">
           <input type="number" id="editBpm" placeholder="BPM">
           <input type="text" id="editKey" placeholder="Тональность">
+        </div>
+        <div class="file-row">
+          <label for="editCoverFile">🖼️ Обложка (оставьте пустым, чтобы не менять)</label>
+          <input type="file" id="editCoverFile" accept="image/*">
+          <div class="cover-preview" id="editCoverPreview" style="display:none;">
+            <img id="editCoverImg" src="" alt="обложка">
+            <span>Текущая обложка</span>
+          </div>
         </div>
         <div class="form-actions">
           <button class="cancel-modal-btn" id="cancelEditBtn">Отмена</button>
@@ -1104,6 +1220,7 @@
     const newBpm = document.getElementById('newBpm');
     const newKey = document.getElementById('newKey');
     const audioFile = document.getElementById('audioFile');
+    const coverFile = document.getElementById('coverFile');
     const loginKey = document.getElementById('loginKey');
 
     // Элементы сортировки
@@ -1111,12 +1228,15 @@
     const sortLabel = document.getElementById('sortLabel');
     const sortArrow = document.getElementById('sortArrow');
     const sortMenu = document.getElementById('sortMenu');
-    let currentSort = 'newest'; // 'newest' или 'oldest'
+    let currentSort = 'newest';
 
     const editModal = document.getElementById('editModal');
     const editName = document.getElementById('editName');
     const editBpm = document.getElementById('editBpm');
     const editKey = document.getElementById('editKey');
+    const editCoverFile = document.getElementById('editCoverFile');
+    const editCoverPreview = document.getElementById('editCoverPreview');
+    const editCoverImg = document.getElementById('editCoverImg');
     const cancelEditBtn = document.getElementById('cancelEditBtn');
     const saveEditBtn = document.getElementById('saveEditBtn');
     let editingBeatId = null;
@@ -1184,7 +1304,7 @@
     loginKey.addEventListener('click', attemptLogin);
 
     // ============================================================
-    // 9. ОБНОВЛЕНИЕ ИНТЕРФЕЙСА В ЗАВИСИМОСТИ ОТ isOwner
+    // 9. ОБНОВЛЕНИЕ ИНТЕРФЕЙСА
     // ============================================================
     function updateUI() {
       if (!isOwner) {
@@ -1199,13 +1319,12 @@
         loginKey.style.display = 'none';
       }
     }
-
     updateUI();
 
     // ============================================================
-    // 10. ЗАГРУЗКА АУДИО В CLOUDINARY
+    // 10. УНИВЕРСАЛЬНАЯ ЗАГРУЗКА ФАЙЛОВ В CLOUDINARY
     // ============================================================
-    function uploadAudioToCloudinary(file) {
+    function uploadFileToCloudinary(file) {
       return new Promise((resolve, reject) => {
         const formData = new FormData();
         formData.append('file', file);
@@ -1241,7 +1360,7 @@
     }
 
     // ============================================================
-    // 11. ДОБАВЛЕНИЕ БИТА
+    // 11. ДОБАВЛЕНИЕ БИТА (с аудио и обложкой)
     // ============================================================
     function addBeat() {
       if (!isOwner) {
@@ -1268,34 +1387,61 @@
         key: key,
         nonExcl: 1500,
         excl: 3000,
-        status: 'free'
+        status: 'free',
+        createdAt: Date.now()
       };
 
-      const file = audioFile.files[0];
-      if (file) {
+      const audioFileObj = audioFile.files[0];
+      const coverFileObj = coverFile.files[0];
+
+      let uploadPromises = [];
+      let audioUrl = null;
+      let coverUrl = null;
+
+      // Загружаем аудио, если есть
+      if (audioFileObj) {
         showSnackbar('⏳ Загрузка аудио...');
-        uploadAudioToCloudinary(file)
-          .then(audioUrl => {
-            newBeat.audioUrl = audioUrl;
-            return beatsRef.push(newBeat);
+        uploadPromises.push(
+          uploadFileToCloudinary(audioFileObj).then(url => {
+            audioUrl = url;
           })
-          .then(() => {
-            showSnackbar(`Бит "${name}" добавлен с аудио!`);
-            resetForm();
+        );
+      }
+      // Загружаем обложку, если есть
+      if (coverFileObj) {
+        showSnackbar('⏳ Загрузка обложки...');
+        uploadPromises.push(
+          uploadFileToCloudinary(coverFileObj).then(url => {
+            coverUrl = url;
           })
-          .catch(err => {
-            const msg = err.message || 'Неизвестная ошибка';
-            showSnackbar('Ошибка загрузки: ' + msg);
-            console.error('Ошибка Cloudinary:', err);
-          });
-      } else {
+        );
+      }
+
+      if (uploadPromises.length === 0) {
+        // Ничего не загружаем, сразу сохраняем
         beatsRef.push(newBeat)
           .then(() => {
             showSnackbar(`Бит "${name}" добавлен!`);
             resetForm();
           })
           .catch(err => showSnackbar('Ошибка: ' + err.message));
+        return;
       }
+
+      Promise.all(uploadPromises)
+        .then(() => {
+          if (audioUrl) newBeat.audioUrl = audioUrl;
+          if (coverUrl) newBeat.coverUrl = coverUrl;
+          return beatsRef.push(newBeat);
+        })
+        .then(() => {
+          showSnackbar(`Бит "${name}" добавлен!`);
+          resetForm();
+        })
+        .catch(err => {
+          showSnackbar('Ошибка загрузки: ' + err.message);
+          console.error(err);
+        });
     }
 
     function resetForm() {
@@ -1303,6 +1449,7 @@
       newBpm.value = '';
       newKey.value = '';
       audioFile.value = '';
+      coverFile.value = '';
       addForm.classList.remove('visible');
     }
 
@@ -1321,7 +1468,7 @@
     }
 
     // ============================================================
-    // 13. РЕДАКТИРОВАНИЕ БИТА
+    // 13. РЕДАКТИРОВАНИЕ БИТА (с обложкой)
     // ============================================================
     function openEditModal(id) {
       const beat = beats.find(b => b.id === id);
@@ -1330,6 +1477,14 @@
       editName.value = beat.name;
       editBpm.value = beat.bpm;
       editKey.value = beat.key;
+      editCoverFile.value = '';
+      // Показываем текущую обложку, если есть
+      if (beat.coverUrl) {
+        editCoverImg.src = beat.coverUrl;
+        editCoverPreview.style.display = 'flex';
+      } else {
+        editCoverPreview.style.display = 'none';
+      }
       editModal.classList.add('active');
     }
 
@@ -1339,6 +1494,8 @@
       editName.value = '';
       editBpm.value = '';
       editKey.value = '';
+      editCoverFile.value = '';
+      editCoverPreview.style.display = 'none';
     }
 
     function saveEdit() {
@@ -1356,12 +1513,33 @@
       }
 
       const updates = { name, bpm, key };
-      beatsRef.child(editingBeatId).update(updates)
-        .then(() => {
-          showSnackbar('Бит обновлён!');
-          closeEditModal();
-        })
-        .catch(err => showSnackbar('Ошибка: ' + err.message));
+      const coverFileObj = editCoverFile.files[0];
+
+      if (coverFileObj) {
+        // Загружаем новую обложку
+        showSnackbar('⏳ Загрузка обложки...');
+        uploadFileToCloudinary(coverFileObj)
+          .then(coverUrl => {
+            updates.coverUrl = coverUrl;
+            return beatsRef.child(editingBeatId).update(updates);
+          })
+          .then(() => {
+            showSnackbar('Бит обновлён!');
+            closeEditModal();
+          })
+          .catch(err => {
+            showSnackbar('Ошибка загрузки обложки: ' + err.message);
+            console.error(err);
+          });
+      } else {
+        // Без изменения обложки
+        beatsRef.child(editingBeatId).update(updates)
+          .then(() => {
+            showSnackbar('Бит обновлён!');
+            closeEditModal();
+          })
+          .catch(err => showSnackbar('Ошибка: ' + err.message));
+      }
     }
 
     cancelEditBtn.addEventListener('click', closeEditModal);
@@ -1399,7 +1577,7 @@
     }
 
     // ============================================================
-    // 15. ВОСПРОИЗВЕДЕНИЕ/ПАУЗА
+    // 15. ВОСПРОИЗВЕДЕНИЕ/ПАУЗА (без изменений)
     // ============================================================
     let currentAudio = null;
     let currentPlayerElements = null;
@@ -1549,7 +1727,7 @@
     }
 
     // ============================================================
-    // 16. ОБРАБОТЧИКИ ФОРМЫ
+    // 16. ОБРАБОТЧИКИ ФОРМЫ ДОБАВЛЕНИЯ
     // ============================================================
     toggleAddFormBtn.addEventListener('click', () => {
       if (!isOwner) {
@@ -1563,7 +1741,6 @@
     });
 
     cancelAddBtn.addEventListener('click', resetForm);
-
     submitAddBtn.addEventListener('click', addBeat);
 
     [newName, newBpm, newKey].forEach(input => {
@@ -1578,7 +1755,7 @@
     });
 
     // ============================================================
-    // 17. ОБРАБОТЧИКИ СОРТИРОВКИ
+    // 17. СОРТИРОВКА
     // ============================================================
     sortOptions.forEach(option => {
       option.addEventListener('click', function() {
@@ -1587,13 +1764,12 @@
         sortOptions.forEach(opt => opt.classList.remove('active'));
         this.classList.add('active');
         sortLabel.textContent = this.textContent;
-        // Закрываем меню (по желанию)
         sortMenu.classList.remove('open');
+        sortArrow.classList.remove('open');
         renderBeats();
       });
     });
 
-    // При наведении на триггер открываем меню (уже через CSS :hover), но для мобильных можно добавить клик
     const sortTrigger = document.querySelector('.sort-trigger');
     sortTrigger.addEventListener('click', function(e) {
       e.stopPropagation();
@@ -1601,7 +1777,6 @@
       sortArrow.classList.toggle('open');
     });
 
-    // Закрываем меню при клике вне
     document.addEventListener('click', function(e) {
       const dropdown = document.getElementById('sortDropdown');
       if (!dropdown.contains(e.target)) {
@@ -1611,7 +1786,7 @@
     });
 
     // ============================================================
-    // 18. РЕНДЕР СПИСКА (с сортировкой)
+    // 18. РЕНДЕР СПИСКА (с обложками)
     // ============================================================
     function renderBeats() {
       let filtered = beats;
@@ -1627,16 +1802,15 @@
       // Сортировка
       if (currentSort === 'newest') {
         filtered.sort((a, b) => {
-          // Если есть поле createdAt, используем его, иначе сортируем по id (предполагаем, что Firebase id хронологические)
           const aTime = a.createdAt || a.id;
           const bTime = b.createdAt || b.id;
-          return aTime < bTime ? 1 : -1; // сначала новые (убывание)
+          return aTime < bTime ? 1 : -1;
         });
       } else {
         filtered.sort((a, b) => {
           const aTime = a.createdAt || a.id;
           const bTime = b.createdAt || b.id;
-          return aTime > bTime ? 1 : -1; // сначала старые (возрастание)
+          return aTime > bTime ? 1 : -1;
         });
       }
 
@@ -1668,6 +1842,14 @@
             </div>
           </div>
         `;
+
+        // Обложка
+        let coverHtml = '';
+        if (beat.coverUrl) {
+          coverHtml = `<div class="beat-cover"><img src="${beat.coverUrl}" alt="cover"></div>`;
+        } else {
+          coverHtml = `<div class="beat-cover">🎵</div>`;
+        }
 
         let playerHtml = '';
         if (beat.audioUrl) {
@@ -1713,6 +1895,7 @@
           playHtml = `<span class="no-audio">🎵 нет аудио</span>`;
         }
 
+        // Собираем карточку: информация слева, обложка справа вверху, плеер внизу
         card.innerHTML = `
           <div class="beat-row">
             <div class="beat-left">
@@ -1727,7 +1910,10 @@
               </div>
               ${licensesHtml}
             </div>
-            <div class="beat-right">
+            <div style="display:flex; align-items:center; gap:4px; flex-wrap:wrap; justify-content:flex-end;">
+              ${coverHtml}
+            </div>
+            <div class="beat-right" style="flex:1; align-items:flex-end;">
               ${playHtml}
               ${actionsHtml}
             </div>
