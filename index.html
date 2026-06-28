@@ -62,7 +62,7 @@
 
     .container {
       width: 100%;
-      max-width: 360px;
+      max-width: 440px;
       display: flex;
       flex-direction: column;
       margin: 0 auto;
@@ -342,10 +342,10 @@
       transform: scale(0.95);
     }
 
-    /* ===== КВАДРАТНЫЕ КАРТОЧКИ ===== */
+    /* ===== ВЕРТИКАЛЬНЫЙ СПИСОК ===== */
     .beat-list {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+      display: flex;
+      flex-direction: column;
       gap: 10px;
       width: 100%;
     }
@@ -355,52 +355,47 @@
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-radius: 12px;
-      padding: 8px;
+      padding: 8px 12px;
       display: flex;
-      flex-direction: column;
       justify-content: space-between;
+      align-items: center;
       border: 1px solid var(--glass-border);
       box-shadow: var(--shadow-deep), 0 0 0 0 var(--accent-glow);
       transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
       cursor: default;
-      aspect-ratio: 1 / 1;
       width: 100%;
-      overflow: hidden;
+      flex-wrap: wrap;
     }
 
     .beat-card:hover {
-      transform: scale(1.02);
+      transform: scale(1.01);
       background: var(--card-hover-bg);
       box-shadow: var(--shadow-deep), 0 0 20px var(--accent-glow);
     }
 
     .beat-card:active {
-      transform: scale(0.97);
+      transform: scale(0.98);
     }
 
     .beat-left {
       display: flex;
       flex-direction: column;
       gap: 2px;
-      flex: 1 1 auto;
+      flex: 1 1 60%;
       min-width: 0;
-      overflow: hidden;
     }
 
     .beat-name {
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 600;
       text-shadow: 0 0 10px var(--accent-glow);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
 
     .beat-details {
-      font-size: 10px;
+      font-size: 11px;
       color: var(--secondary-text);
       display: flex;
-      gap: 4px;
+      gap: 6px;
       flex-wrap: wrap;
     }
 
@@ -413,15 +408,15 @@
     .beat-status {
       display: flex;
       align-items: center;
-      gap: 3px;
-      font-size: 10px;
+      gap: 4px;
+      font-size: 11px;
       font-weight: 500;
       margin-top: 1px;
     }
 
     .status-dot {
-      width: 7px;
-      height: 7px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       display: inline-block;
       box-shadow: 0 0 6px var(--dot-shadow);
@@ -436,7 +431,7 @@
       flex-direction: column;
       gap: 1px;
       margin-top: 2px;
-      font-size: 9px;
+      font-size: 10px;
       color: var(--secondary-text);
       letter-spacing: 0.1px;
     }
@@ -444,8 +439,7 @@
     .beat-licenses .license-item {
       display: flex;
       align-items: baseline;
-      gap: 2px;
-      flex-wrap: wrap;
+      gap: 3px;
     }
 
     .beat-licenses .license-item .price {
@@ -458,13 +452,14 @@
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 3px;
-      margin-top: 4px;
+      gap: 4px;
+      flex: 0 1 35%;
+      max-width: 40%;
     }
 
     .beat-actions {
       display: flex;
-      gap: 3px;
+      gap: 4px;
       align-items: center;
       flex-wrap: wrap;
       justify-content: flex-end;
@@ -475,12 +470,12 @@
       color: #fff;
       border: none;
       border-radius: 30px;
-      padding: 1px 8px;
-      font-size: 9px;
+      padding: 2px 10px;
+      font-size: 10px;
       font-weight: 600;
       cursor: pointer;
       transition: 0.2s;
-      box-shadow: 0 0 10px var(--accent-glow), 0 1px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 0 12px var(--accent-glow), 0 1px 4px rgba(0,0,0,0.1);
     }
 
     .action-btn:active {
@@ -489,7 +484,7 @@
 
     .action-btn.bought-btn {
       background: #ef4444;
-      box-shadow: 0 0 10px rgba(239, 68, 68, 0.3), 0 1px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.3), 0 1px 4px rgba(0,0,0,0.1);
     }
 
     .action-btn:disabled {
@@ -504,13 +499,13 @@
       color: var(--delete-color);
       border: 1px solid var(--delete-color);
       border-radius: 30px;
-      padding: 0px 5px;
-      font-size: 9px;
+      padding: 1px 6px;
+      font-size: 10px;
       font-weight: 600;
       cursor: pointer;
       transition: 0.2s;
       opacity: 0.6;
-      line-height: 1.6;
+      line-height: 1.5;
       box-shadow: 0 1px 4px rgba(0,0,0,0.05);
     }
 
@@ -518,21 +513,20 @@
       opacity: 1;
       background: var(--delete-color);
       color: #fff;
-      box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
     }
 
     .delete-btn:active {
       transform: scale(0.9);
     }
 
-    /* ===== ПЛЕЕР (компактный) ===== */
+    /* ===== ПЛЕЕР С АНИМАЦИЕЙ ===== */
     .audio-player {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 2px;
       width: 100%;
-      max-width: 120px;
+      max-width: 160px;
     }
 
     .audio-player .play-btn {
@@ -540,8 +534,8 @@
       color: var(--accent);
       border: 1px solid var(--accent);
       border-radius: 30px;
-      padding: 0px 6px;
-      font-size: 9px;
+      padding: 1px 10px;
+      font-size: 11px;
       font-weight: 600;
       cursor: pointer;
       transition: 0.2s;
@@ -554,34 +548,52 @@
       opacity: 1;
       background: var(--accent);
       color: #fff;
-      box-shadow: 0 0 10px var(--accent-glow);
+      box-shadow: 0 0 12px var(--accent-glow);
     }
 
     .audio-player .play-btn.playing {
       background: var(--accent);
       color: #fff;
-      box-shadow: 0 0 12px var(--accent-glow);
+      box-shadow: 0 0 16px var(--accent-glow);
     }
 
     .audio-player .play-btn:active {
       transform: scale(0.9);
     }
 
+    /* Контейнер для прогресса и таймера (скрыт по умолчанию) */
+    .audio-player .progress-wrapper {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                  opacity 0.3s ease,
+                  margin 0.3s ease;
+      width: 100%;
+      margin-top: 0;
+    }
+
+    .audio-player .progress-wrapper.expanded {
+      max-height: 60px; /* достаточно, чтобы поместить ползунок и таймер */
+      opacity: 1;
+      margin-top: 4px;
+    }
+
     .audio-player .progress-row {
       display: flex;
       align-items: center;
-      gap: 3px;
+      gap: 4px;
       width: 100%;
     }
 
     .audio-player .progress-container {
       flex: 1;
-      height: 2px;
+      height: 3px;
       background: var(--secondary-text);
       border-radius: 2px;
       cursor: pointer;
       position: relative;
-      min-width: 20px;
+      min-width: 30px;
     }
 
     .audio-player .progress-bar {
@@ -590,15 +602,15 @@
       background: var(--accent);
       border-radius: 2px;
       transition: width 0.1s linear;
-      box-shadow: 0 0 4px var(--accent-glow);
+      box-shadow: 0 0 6px var(--accent-glow);
     }
 
     .audio-player .progress-container input[type="range"] {
       position: absolute;
-      top: -4px;
+      top: -5px;
       left: 0;
       width: 100%;
-      height: 10px;
+      height: 13px;
       margin: 0;
       padding: 0;
       opacity: 0;
@@ -606,17 +618,17 @@
     }
 
     .audio-player .time-display {
-      font-size: 8px;
+      font-size: 10px;
       color: var(--secondary-text);
       letter-spacing: 0.2px;
       font-variant-numeric: tabular-nums;
       flex-shrink: 0;
-      min-width: 44px;
+      min-width: 54px;
       text-align: right;
     }
 
     .no-audio {
-      font-size: 9px;
+      font-size: 10px;
       color: var(--secondary-text);
       opacity: 0.5;
     }
@@ -659,35 +671,28 @@
       width: 100%;
     }
 
-    /* ===== МОБИЛЬНАЯ АДАПТАЦИЯ ===== */
     @media (max-width: 480px) {
-      .container { max-width: 100%; padding: 0 4px; }
-      .beat-list { grid-template-columns: 1fr 1fr; gap: 8px; }
-      .beat-card { aspect-ratio: 1 / 1; padding: 6px; }
-      .beat-name { font-size: 12px; }
-      .beat-details { font-size: 9px; }
-      .beat-status { font-size: 9px; }
-      .beat-licenses { font-size: 8px; }
-      .action-btn { font-size: 8px; padding: 1px 6px; }
-      .delete-btn { font-size: 8px; padding: 0px 4px; }
-      .audio-player .play-btn { font-size: 8px; padding: 0px 5px; }
-      .audio-player .time-display { font-size: 7px; min-width: 36px; }
+      .beat-left { flex: 1 1 100%; }
+      .beat-right { flex: 1 1 100%; align-items: stretch; max-width: 100%; }
+      .audio-player { max-width: 100%; }
+      .audio-player .play-btn { align-self: center; }
+      .audio-player .progress-wrapper.expanded { max-height: 50px; }
     }
 
     @media (max-width: 380px) {
       .header h1 { font-size: 24px; }
       .greeting h2 { font-size: 19px; }
       .greeting p { font-size: 12px; }
-      .beat-list { grid-template-columns: 1fr 1fr; gap: 6px; }
-      .beat-card { padding: 4px; }
-      .beat-name { font-size: 11px; }
-      .beat-details { font-size: 8px; }
-      .beat-status { font-size: 8px; }
-      .beat-licenses { font-size: 7px; }
-      .action-btn { font-size: 7px; padding: 0px 5px; }
-      .delete-btn { font-size: 7px; padding: 0px 3px; }
-      .audio-player .play-btn { font-size: 7px; padding: 0px 4px; }
-      .audio-player .time-display { font-size: 6px; min-width: 30px; }
+      .beat-card { padding: 6px 8px; }
+      .beat-name { font-size: 13px; }
+      .beat-details { font-size: 10px; }
+      .beat-status { font-size: 10px; }
+      .beat-licenses { font-size: 9px; }
+      .action-btn { font-size: 9px; padding: 1px 8px; }
+      .delete-btn { font-size: 9px; padding: 1px 5px; }
+      .audio-player .play-btn { font-size: 10px; padding: 1px 8px; }
+      .audio-player .time-display { font-size: 9px; min-width: 44px; }
+      .filters button { font-size: 10px; padding: 2px 10px; }
     }
   </style>
 </head>
@@ -870,8 +875,9 @@
     let currentFilter = 'all';
     let searchQuery = '';
 
+    // Глобальные переменные для плеера
     let currentAudio = null;
-    let currentPlayerElements = null;
+    let currentPlayerElements = null; // { playBtn, progressWrapper, progressBar, timeDisplay, progressContainer, card }
 
     let snackbarTimer;
 
@@ -1031,33 +1037,47 @@
     }
 
     // ============================================================
-    // 12. ВОСПРОИЗВЕДЕНИЕ/ПАУЗА / УПРАВЛЕНИЕ ПЛЕЕРОМ
+    // 12. ВОСПРОИЗВЕДЕНИЕ/ПАУЗА / УПРАВЛЕНИЕ ПЛЕЕРОМ (с анимацией)
     // ============================================================
-    function togglePlay(beatId, url, playBtn, progressBar, timeDisplay, progressContainer) {
+    function togglePlay(beatId, url, playBtn, progressWrapper, progressBar, timeDisplay, progressContainer, card) {
       if (!url) {
         showSnackbar('❌ Аудио не загружено');
         return;
       }
 
+      // Если уже играет этот же трек и плеер раскрыт — ставим паузу
       if (currentAudio && !currentAudio.paused && currentAudio.src === url) {
         currentAudio.pause();
         playBtn.textContent = '▶ Play';
         playBtn.classList.remove('playing');
+        // Плеер остаётся раскрытым (показываем прогресс)
+        // Не скрываем, чтобы пользователь видел где остановился
         return;
       }
 
+      // Если плеер другого трека активен — сворачиваем его
       if (currentAudio) {
         currentAudio.pause();
         if (currentPlayerElements) {
           currentPlayerElements.playBtn.textContent = '▶ Play';
           currentPlayerElements.playBtn.classList.remove('playing');
+          // Сворачиваем прогресс
+          currentPlayerElements.progressWrapper.classList.remove('expanded');
         }
+        // Удаляем обработчики (чтобы не было конфликтов)
+        currentAudio = null;
+        currentPlayerElements = null;
       }
 
+      // Показываем прогресс для этого плеера (анимация раскрытия)
+      progressWrapper.classList.add('expanded');
+
+      // Создаём аудио
       const audio = new Audio(url);
       currentAudio = audio;
-      currentPlayerElements = { playBtn, progressBar, timeDisplay, progressContainer };
+      currentPlayerElements = { playBtn, progressWrapper, progressBar, timeDisplay, progressContainer, card };
 
+      // Обработчики событий
       audio.addEventListener('loadedmetadata', () => {
         const total = formatTime(audio.duration);
         const current = formatTime(audio.currentTime);
@@ -1092,11 +1112,14 @@
         }
         const total = formatTime(audio.duration);
         timeDisplay.textContent = `00:00 / ${total}`;
+        // Сворачиваем плеер с анимацией
+        progressWrapper.classList.remove('expanded');
         currentAudio = null;
         currentPlayerElements = null;
       });
 
       audio.addEventListener('pause', () => {
+        // Обновляем кнопку, если пауза вызвана не нами
         if (currentAudio === audio && !audio.ended) {
           playBtn.textContent = '▶ Play';
           playBtn.classList.remove('playing');
@@ -1111,6 +1134,7 @@
         .catch(err => {
           showSnackbar('❌ Ошибка воспроизведения');
           console.error(err);
+          progressWrapper.classList.remove('expanded');
           currentAudio = null;
           currentPlayerElements = null;
         });
@@ -1123,10 +1147,12 @@
         const range = progressContainer.querySelector('input[type="range"]');
         if (range) range.value = 0;
         timeDisplay.textContent = `00:00 / 00:00`;
+        progressWrapper.classList.remove('expanded');
         currentAudio = null;
         currentPlayerElements = null;
       };
 
+      // Обработчик перемотки (ползунок)
       const rangeInput = progressContainer.querySelector('input[type="range"]');
       if (rangeInput) {
         rangeInput.addEventListener('input', function() {
@@ -1142,6 +1168,7 @@
         });
       }
 
+      // Клик по прогресс-бару
       progressContainer.addEventListener('click', function(e) {
         if (e.target === rangeInput) return;
         const rect = this.getBoundingClientRect();
@@ -1213,7 +1240,7 @@
       }
 
       if (filtered.length === 0) {
-        beatList.innerHTML = `<div style="text-align:center;color:var(--secondary-text);padding:20px 0;font-size:13px;grid-column:1/-1;">Нет битов, соответствующих запросу</div>`;
+        beatList.innerHTML = `<div style="text-align:center;color:var(--secondary-text);padding:20px 0;font-size:13px;">Нет битов, соответствующих запросу</div>`;
         return;
       }
 
@@ -1246,12 +1273,14 @@
           playerHtml = `
             <div class="audio-player">
               <button class="play-btn" data-url="${beat.audioUrl}">▶ Play</button>
-              <div class="progress-row">
-                <div class="progress-container" data-beat-id="${beat.id}">
-                  <div class="progress-bar" style="width:0%"></div>
-                  <input type="range" min="0" max="100" value="0" step="0.1">
+              <div class="progress-wrapper">
+                <div class="progress-row">
+                  <div class="progress-container" data-beat-id="${beat.id}">
+                    <div class="progress-bar" style="width:0%"></div>
+                    <input type="range" min="0" max="100" value="0" step="0.1">
+                  </div>
+                  <span class="time-display">00:00 / 00:00</span>
                 </div>
-                <span class="time-display">00:00 / 00:00</span>
               </div>
             </div>
           `;
@@ -1304,15 +1333,16 @@
 
         if (beat.audioUrl) {
           const playBtn = card.querySelector('.play-btn');
+          const progressWrapper = card.querySelector('.progress-wrapper');
           const progressBar = card.querySelector('.progress-bar');
           const timeDisplay = card.querySelector('.time-display');
           const progressContainer = card.querySelector('.progress-container');
 
-          if (playBtn && progressBar && timeDisplay && progressContainer) {
+          if (playBtn && progressWrapper && progressBar && timeDisplay && progressContainer) {
             playBtn.addEventListener('click', function(e) {
               e.stopPropagation();
               const url = this.dataset.url;
-              togglePlay(beat.id, url, this, progressBar, timeDisplay, progressContainer);
+              togglePlay(beat.id, url, this, progressWrapper, progressBar, timeDisplay, progressContainer, card);
             });
           }
         }
