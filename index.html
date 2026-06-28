@@ -342,7 +342,6 @@
       transform: scale(0.95);
     }
 
-    /* ===== ВЕРТИКАЛЬНЫЙ СПИСОК ===== */
     .beat-list {
       display: flex;
       flex-direction: column;
@@ -375,7 +374,6 @@
       transform: scale(0.98);
     }
 
-    /* Верхняя часть карточки (информация + кнопки) */
     .beat-row {
       display: flex;
       justify-content: space-between;
@@ -427,11 +425,21 @@
       border-radius: 50%;
       display: inline-block;
       box-shadow: 0 0 6px var(--dot-shadow);
+      transition: box-shadow 0.3s ease;
     }
 
-    .status-dot.free { background: #22c55e; }
-    .status-dot.booked { background: #eab308; }
-    .status-dot.bought { background: #ef4444; }
+    .status-dot.free {
+      background: #22c55e;
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.6);
+    }
+    .status-dot.booked {
+      background: #eab308;
+      box-shadow: 0 0 12px rgba(234, 179, 8, 0.6);
+    }
+    .status-dot.bought {
+      background: #ef4444;
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
+    }
 
     .beat-licenses {
       display: flex;
@@ -472,36 +480,70 @@
       justify-content: flex-end;
     }
 
-    /* Кнопка Play */
+    /* ===== НОВАЯ КНОПКА PLAY (только иконка) ===== */
     .play-btn {
       background: transparent;
       color: var(--accent);
       border: 1px solid var(--accent);
-      border-radius: 30px;
-      padding: 1px 10px;
-      font-size: 11px;
-      font-weight: 600;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
       cursor: pointer;
       transition: 0.2s;
-      opacity: 0.7;
-      line-height: 1.6;
-      align-self: flex-start;
+      opacity: 0.8;
+      box-shadow: 0 0 12px var(--accent-glow);
+      flex-shrink: 0;
     }
 
     .play-btn:hover {
       opacity: 1;
       background: var(--accent);
       color: #fff;
-      box-shadow: 0 0 12px var(--accent-glow);
+      box-shadow: 0 0 20px var(--accent-glow), 0 0 40px var(--accent-glow);
+      transform: scale(1.05);
     }
 
     .play-btn.playing {
       background: var(--accent);
       color: #fff;
-      box-shadow: 0 0 16px var(--accent-glow);
+      box-shadow: 0 0 20px var(--accent-glow), 0 0 40px var(--accent-glow);
     }
 
     .play-btn:active {
+      transform: scale(0.9);
+    }
+
+    /* Кнопка редактирования */
+    .edit-btn {
+      background: transparent;
+      color: var(--secondary-text);
+      border: 1px solid var(--secondary-text);
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      cursor: pointer;
+      transition: 0.2s;
+      opacity: 0.6;
+      line-height: 1;
+    }
+
+    .edit-btn:hover {
+      opacity: 1;
+      background: var(--secondary-text);
+      color: #fff;
+    }
+
+    .edit-btn:active {
       transform: scale(0.9);
     }
 
@@ -560,26 +602,29 @@
       transform: scale(0.9);
     }
 
-    /* ===== ПЛЕЕР ВНИЗУ КАРТОЧКИ ===== */
+    /* ===== ПЛЕЕР ВНИЗУ КАРТОЧКИ С ПЛАВНОЙ АНИМАЦИЕЙ ===== */
     .beat-player-wrapper {
       width: 100%;
       overflow: hidden;
       max-height: 0;
-      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                  margin-top 0.3s ease;
+      transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                  margin-top 0.6s cubic-bezier(0.4, 0, 0.2, 1);
       margin-top: 0;
+      opacity: 0;
+      transition: max-height 0.6s ease-in-out, margin-top 0.6s ease-in-out, opacity 0.6s ease-in-out;
     }
 
     .beat-player-wrapper.expanded {
       max-height: 60px;
       margin-top: 6px;
+      opacity: 1;
     }
 
     .beat-player-inner {
       display: flex;
       flex-direction: column;
       width: 100%;
-      padding-top: 2px;
+      padding-top: 4px;
       border-top: 1px solid var(--glass-border);
       padding-bottom: 2px;
     }
@@ -607,7 +652,7 @@
       background: var(--accent);
       border-radius: 2px;
       transition: width 0.1s linear;
-      box-shadow: 0 0 6px var(--accent-glow);
+      box-shadow: 0 0 8px var(--accent-glow);
     }
 
     .beat-player-inner .progress-container input[type="range"] {
@@ -636,6 +681,110 @@
       font-size: 10px;
       color: var(--secondary-text);
       opacity: 0.5;
+    }
+
+    /* ===== МОДАЛЬНОЕ ОКНО ДЛЯ РЕДАКТИРОВАНИЯ ===== */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(8px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 300;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 20px;
+      max-width: 360px;
+      width: 90%;
+      box-shadow: var(--shadow-deep), 0 0 40px var(--accent-glow);
+      animation: slideUp 0.3s ease;
+    }
+
+    .modal h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+
+    .modal .form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .modal .form-row input {
+      padding: 8px 12px;
+      border-radius: 30px;
+      border: 1px solid var(--glass-border);
+      background: var(--input-bg);
+      backdrop-filter: blur(4px);
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    .modal .form-row input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+
+    .modal .form-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .modal .form-actions button {
+      padding: 6px 18px;
+      border-radius: 30px;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .modal .form-actions .save-btn {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+
+    .modal .form-actions .cancel-modal-btn {
+      background: var(--glass-bg);
+      color: var(--secondary-text);
+      border: 1px solid var(--glass-border);
+    }
+
+    .modal .form-actions button:active {
+      transform: scale(0.95);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
 
     .snackbar {
@@ -681,6 +830,7 @@
       .beat-right { flex: 1 1 100%; align-items: stretch; max-width: 100%; }
       .beat-right .play-btn { align-self: center; }
       .beat-player-wrapper.expanded { max-height: 50px; }
+      .modal { max-width: 100%; }
     }
 
     @media (max-width: 380px) {
@@ -694,7 +844,8 @@
       .beat-licenses { font-size: 9px; }
       .action-btn { font-size: 9px; padding: 1px 8px; }
       .delete-btn { font-size: 9px; padding: 1px 5px; }
-      .play-btn { font-size: 10px; padding: 1px 8px; }
+      .play-btn { width: 24px; height: 24px; font-size: 12px; }
+      .edit-btn { width: 20px; height: 20px; font-size: 10px; }
       .time-display { font-size: 9px; min-width: 44px; }
       .filters button { font-size: 10px; padding: 2px 10px; }
     }
@@ -749,6 +900,22 @@
     </div>
 
     <div class="beat-list" id="beatList"></div>
+
+    <!-- Модальное окно редактирования -->
+    <div class="modal-overlay" id="editModal">
+      <div class="modal">
+        <h3>Редактировать бит</h3>
+        <div class="form-row">
+          <input type="text" id="editName" placeholder="Название">
+          <input type="number" id="editBpm" placeholder="BPM">
+          <input type="text" id="editKey" placeholder="Тональность">
+        </div>
+        <div class="form-actions">
+          <button class="cancel-modal-btn" id="cancelEditBtn">Отмена</button>
+          <button class="save-btn" id="saveEditBtn">Сохранить</button>
+        </div>
+      </div>
+    </div>
 
     <div id="snackbar" class="snackbar"></div>
   </div>
@@ -821,6 +988,15 @@
     const newKey = document.getElementById('newKey');
     const audioFile = document.getElementById('audioFile');
 
+    // Элементы модалки редактирования
+    const editModal = document.getElementById('editModal');
+    const editName = document.getElementById('editName');
+    const editBpm = document.getElementById('editBpm');
+    const editKey = document.getElementById('editKey');
+    const cancelEditBtn = document.getElementById('cancelEditBtn');
+    const saveEditBtn = document.getElementById('saveEditBtn');
+    let editingBeatId = null;
+
     let currentUser = null;
     let isOwner = false;
 
@@ -879,9 +1055,8 @@
     let currentFilter = 'all';
     let searchQuery = '';
 
-    // Глобальные переменные для плеера
     let currentAudio = null;
-    let currentPlayerElements = null; // { playBtn, wrapper, progressBar, timeDisplay, progressContainer }
+    let currentPlayerElements = null;
 
     let snackbarTimer;
 
@@ -1013,7 +1188,58 @@
     }
 
     // ============================================================
-    // 11. ИЗМЕНЕНИЕ СТАТУСА
+    // 11. РЕДАКТИРОВАНИЕ БИТА
+    // ============================================================
+    function openEditModal(id) {
+      const beat = beats.find(b => b.id === id);
+      if (!beat) return;
+      editingBeatId = id;
+      editName.value = beat.name;
+      editBpm.value = beat.bpm;
+      editKey.value = beat.key;
+      editModal.classList.add('active');
+    }
+
+    function closeEditModal() {
+      editModal.classList.remove('active');
+      editingBeatId = null;
+      editName.value = '';
+      editBpm.value = '';
+      editKey.value = '';
+    }
+
+    function saveEdit() {
+      if (!isOwner || !editingBeatId) return;
+      const name = editName.value.trim();
+      const bpm = parseInt(editBpm.value.trim());
+      const key = editKey.value.trim();
+      if (!name || !bpm || !key) {
+        showSnackbar('Заполните все поля!');
+        return;
+      }
+      if (isNaN(bpm) || bpm < 1) {
+        showSnackbar('BPM должно быть числом больше 0');
+        return;
+      }
+
+      const updates = { name, bpm, key };
+      beatsRef.child(editingBeatId).update(updates)
+        .then(() => {
+          showSnackbar('Бит обновлён!');
+          closeEditModal();
+        })
+        .catch(err => showSnackbar('Ошибка: ' + err.message));
+    }
+
+    cancelEditBtn.addEventListener('click', closeEditModal);
+    saveEditBtn.addEventListener('click', saveEdit);
+    // Закрытие по клику на оверлей
+    editModal.addEventListener('click', (e) => {
+      if (e.target === editModal) closeEditModal();
+    });
+
+    // ============================================================
+    // 12. ИЗМЕНЕНИЕ СТАТУСА
     // ============================================================
     function changeStatus(id) {
       if (!isOwner) {
@@ -1041,7 +1267,7 @@
     }
 
     // ============================================================
-    // 12. ВОСПРОИЗВЕДЕНИЕ/ПАУЗА / УПРАВЛЕНИЕ ПЛЕЕРОМ (с анимацией внизу)
+    // 13. ВОСПРОИЗВЕДЕНИЕ/ПАУЗА / УПРАВЛЕНИЕ ПЛЕЕРОМ (с анимацией)
     // ============================================================
     function togglePlay(beatId, url, playBtn, wrapper, progressBar, timeDisplay, progressContainer) {
       if (!url) {
@@ -1049,20 +1275,17 @@
         return;
       }
 
-      // Если уже играет этот же трек и плеер раскрыт — ставим паузу
       if (currentAudio && !currentAudio.paused && currentAudio.src === url) {
         currentAudio.pause();
-        playBtn.textContent = '▶ Play';
+        playBtn.textContent = '▶';
         playBtn.classList.remove('playing');
-        // Плеер остаётся раскрытым, чтобы показывать прогресс
         return;
       }
 
-      // Если плеер другого трека активен — сворачиваем его
       if (currentAudio) {
         currentAudio.pause();
         if (currentPlayerElements) {
-          currentPlayerElements.playBtn.textContent = '▶ Play';
+          currentPlayerElements.playBtn.textContent = '▶';
           currentPlayerElements.playBtn.classList.remove('playing');
           currentPlayerElements.wrapper.classList.remove('expanded');
         }
@@ -1070,15 +1293,12 @@
         currentPlayerElements = null;
       }
 
-      // Показываем прогресс для этого плеера (анимация раскрытия)
       wrapper.classList.add('expanded');
 
-      // Создаём аудио
       const audio = new Audio(url);
       currentAudio = audio;
       currentPlayerElements = { playBtn, wrapper, progressBar, timeDisplay, progressContainer };
 
-      // Обработчики
       audio.addEventListener('loadedmetadata', () => {
         const total = formatTime(audio.duration);
         const current = formatTime(audio.currentTime);
@@ -1104,7 +1324,7 @@
       });
 
       audio.addEventListener('ended', () => {
-        playBtn.textContent = '▶ Play';
+        playBtn.textContent = '▶';
         playBtn.classList.remove('playing');
         progressBar.style.width = '0%';
         const range = progressContainer.querySelector('input[type="range"]');
@@ -1120,14 +1340,14 @@
 
       audio.addEventListener('pause', () => {
         if (currentAudio === audio && !audio.ended) {
-          playBtn.textContent = '▶ Play';
+          playBtn.textContent = '▶';
           playBtn.classList.remove('playing');
         }
       });
 
       audio.play()
         .then(() => {
-          playBtn.textContent = '⏸ Pause';
+          playBtn.textContent = '⏸';
           playBtn.classList.add('playing');
         })
         .catch(err => {
@@ -1140,7 +1360,7 @@
 
       audio.onerror = () => {
         showSnackbar('❌ Ошибка загрузки аудио');
-        playBtn.textContent = '▶ Play';
+        playBtn.textContent = '▶';
         playBtn.classList.remove('playing');
         progressBar.style.width = '0%';
         const range = progressContainer.querySelector('input[type="range"]');
@@ -1151,7 +1371,6 @@
         currentPlayerElements = null;
       };
 
-      // Обработчик перемотки (ползунок)
       const rangeInput = progressContainer.querySelector('input[type="range"]');
       if (rangeInput) {
         rangeInput.addEventListener('input', function() {
@@ -1167,7 +1386,6 @@
         });
       }
 
-      // Клик по прогресс-бару
       progressContainer.addEventListener('click', function(e) {
         if (e.target === rangeInput) return;
         const rect = this.getBoundingClientRect();
@@ -1196,7 +1414,7 @@
     }
 
     // ============================================================
-    // 13. ОБРАБОТЧИКИ ФОРМЫ
+    // 14. ОБРАБОТЧИКИ ФОРМЫ
     // ============================================================
     toggleAddFormBtn.addEventListener('click', () => {
       if (!isOwner) {
@@ -1225,7 +1443,7 @@
     });
 
     // ============================================================
-    // 14. РЕНДЕР СПИСКА
+    // 15. РЕНДЕР СПИСКА
     // ============================================================
     function renderBeats() {
       let filtered = beats;
@@ -1298,15 +1516,15 @@
           actionsHtml = `
             <div class="beat-actions">
               <button class="action-btn ${actionClass}" data-id="${beat.id}">${actionText}</button>
+              <button class="edit-btn" data-id="${beat.id}" title="Редактировать">✎</button>
               <button class="delete-btn" data-id="${beat.id}">✕</button>
             </div>
           `;
         }
 
-        // Кнопка Play
         let playHtml = '';
         if (beat.audioUrl) {
-          playHtml = `<button class="play-btn" data-url="${beat.audioUrl}">▶ Play</button>`;
+          playHtml = `<button class="play-btn" data-url="${beat.audioUrl}">▶</button>`;
         } else {
           playHtml = `<span class="no-audio">🎵 нет аудио</span>`;
         }
@@ -1362,6 +1580,13 @@
               changeStatus(beat.id);
             });
           }
+          const editBtn = card.querySelector('.edit-btn');
+          if (editBtn) {
+            editBtn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              openEditModal(beat.id);
+            });
+          }
           const deleteBtn = card.querySelector('.delete-btn');
           if (deleteBtn) {
             deleteBtn.addEventListener('click', (e) => {
@@ -1376,7 +1601,7 @@
     }
 
     // ============================================================
-    // 15. ФИЛЬТРЫ И ПОИСК
+    // 16. ФИЛЬТРЫ И ПОИСК
     // ============================================================
     filterButtons.forEach(btn => {
       btn.addEventListener('click', function() {
