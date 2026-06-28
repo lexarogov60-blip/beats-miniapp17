@@ -380,6 +380,7 @@
       flex-direction: column;
       gap: 6px;
       flex: 1;
+      min-width: 0;
     }
 
     .beat-name {
@@ -514,18 +515,35 @@
       transform: scale(0.9);
     }
 
+    /* ===== НОВЫЙ ПЛЕЕР ===== */
+    .audio-player {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+      width: 160px;
+    }
+
+    .audio-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+
     .play-btn {
       background: transparent;
       color: var(--accent);
       border: 1px solid var(--accent);
       border-radius: 30px;
-      padding: 4px 12px;
+      padding: 2px 10px;
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
       transition: 0.2s;
       opacity: 0.7;
-      line-height: 1.4;
+      line-height: 1.6;
+      flex-shrink: 0;
     }
 
     .play-btn:hover {
@@ -543,6 +561,66 @@
 
     .play-btn:active {
       transform: scale(0.9);
+    }
+
+    .progress-container {
+      flex: 1;
+      height: 4px;
+      background: var(--secondary-text);
+      border-radius: 2px;
+      cursor: pointer;
+      position: relative;
+      min-width: 60px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.1s linear;
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .progress-container input[type="range"] {
+      position: absolute;
+      top: -6px;
+      left: 0;
+      width: 100%;
+      height: 16px;
+      margin: 0;
+      padding: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .time-display {
+      font-size: 11px;
+      color: var(--secondary-text);
+      letter-spacing: 0.3px;
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+      min-width: 70px;
+      text-align: right;
+    }
+
+    .no-audio {
+      font-size: 12px;
+      color: var(--secondary-text);
+      opacity: 0.5;
+    }
+
+    @media (max-width: 500px) {
+      .audio-player {
+        width: 140px;
+      }
+      .progress-container {
+        min-width: 40px;
+      }
+      .time-display {
+        font-size: 10px;
+        min-width: 60px;
+      }
     }
 
     .snackbar {
@@ -592,6 +670,22 @@
       .beat-actions { flex-wrap: wrap; }
       .add-form .form-row { flex-direction: column; }
       .add-form .file-row input[type="file"] { font-size: 12px; }
+      .audio-player {
+        width: 100%;
+        align-items: stretch;
+      }
+      .audio-controls {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+      .progress-container {
+        flex: 1 1 100%;
+        order: 3;
+        margin-top: 2px;
+      }
+      .time-display {
+        min-width: auto;
+      }
     }
   </style>
 </head>
@@ -658,8 +752,7 @@
     // 2. НАСТРОЙКИ CLOUDINARY
     // ============================================================
     const CLOUDINARY_CLOUD_NAME = 'drmjtipw9';
-    // Для теста используйте 'ml_default' — если заработает, значит проблема в вашем пресете
-    const CLOUDINARY_UPLOAD_PRESET = 'sokx_beats'; // или 'ml_default'
+    const CLOUDINARY_UPLOAD_PRESET = 'sokx_beats'; // или 'ml_default' для теста
 
     // ============================================================
     // 3. КОНФИГУРАЦИЯ FIREBASE
@@ -774,7 +867,10 @@
 
     let currentFilter = 'all';
     let searchQuery = '';
+
+    // Глобальные переменные для управления плеером
     let currentAudio = null;
+    let currentPlayerElements = null; // { playBtn, progress, timeDisplay, progressBar, container }
 
     let snackbarTimer;
 
@@ -788,17 +884,14 @@
     }
 
     // ============================================================
-    // 8. ЗАГРУЗКА АУДИО В CLOUDINARY (исправленная версия)
+    // 8. ЗАГРУЗКА АУДИО В CLOUDINARY
     // ============================================================
     function uploadAudioToCloudinary(file) {
       return new Promise((resolve, reject) => {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-
-        // Используем auto в URL для автоматического определения типа
         const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`;
-
         fetch(url, {
           method: 'POST',
           body: formData
@@ -937,52 +1030,154 @@
     }
 
     // ============================================================
-    // 12. ВОСПРОИЗВЕДЕНИЕ АУДИО
+    // 12. ВОСПРОИЗВЕДЕНИЕ/ПАУЗА / УПРАВЛЕНИЕ ПЛЕЕРОМ
     // ============================================================
-    function playAudio(url, buttonElement) {
+    function togglePlay(beatId, url, playBtn, progressBar, timeDisplay, progressContainer) {
       if (!url) {
-        showSnackbar('❌ Аудио не загружено для этого бита');
+        showSnackbar('❌ Аудио не загружено');
         return;
       }
 
+      // Если уже играет этот же трек — ставим на паузу
       if (currentAudio && !currentAudio.paused && currentAudio.src === url) {
         currentAudio.pause();
-        buttonElement.textContent = '▶ Play';
-        buttonElement.classList.remove('playing');
+        playBtn.textContent = '▶ Play';
+        playBtn.classList.remove('playing');
         return;
       }
 
+      // Если есть другой активный аудио — останавливаем его и сбрасываем плеер
       if (currentAudio) {
         currentAudio.pause();
-        document.querySelectorAll('.play-btn').forEach(btn => {
-          btn.textContent = '▶ Play';
-          btn.classList.remove('playing');
-        });
+        if (currentPlayerElements) {
+          currentPlayerElements.playBtn.textContent = '▶ Play';
+          currentPlayerElements.playBtn.classList.remove('playing');
+          // Не сбрасываем прогресс и время, чтобы осталось на том же месте
+        }
       }
 
-      currentAudio = new Audio(url);
-      currentAudio.play()
+      // Создаём новое аудио
+      const audio = new Audio(url);
+      currentAudio = audio;
+      currentPlayerElements = { playBtn, progressBar, timeDisplay, progressContainer };
+
+      audio.addEventListener('loadedmetadata', () => {
+        // Обновляем общее время
+        const total = formatTime(audio.duration);
+        const current = formatTime(audio.currentTime);
+        timeDisplay.textContent = `${current} / ${total}`;
+        // Устанавливаем max для range
+        const range = progressContainer.querySelector('input[type="range"]');
+        if (range) {
+          range.max = audio.duration;
+          range.value = 0;
+        }
+      });
+
+      audio.addEventListener('timeupdate', () => {
+        if (!audio.duration) return;
+        const progress = (audio.currentTime / audio.duration) * 100;
+        progressBar.style.width = progress + '%';
+        const range = progressContainer.querySelector('input[type="range"]');
+        if (range) {
+          range.value = audio.currentTime;
+        }
+        const current = formatTime(audio.currentTime);
+        const total = formatTime(audio.duration);
+        timeDisplay.textContent = `${current} / ${total}`;
+      });
+
+      audio.addEventListener('ended', () => {
+        // Когда трек закончился, сбрасываем прогресс и меняем кнопку
+        playBtn.textContent = '▶ Play';
+        playBtn.classList.remove('playing');
+        progressBar.style.width = '0%';
+        const range = progressContainer.querySelector('input[type="range"]');
+        if (range) {
+          range.value = 0;
+        }
+        const total = formatTime(audio.duration);
+        timeDisplay.textContent = `00:00 / ${total}`;
+        currentAudio = null;
+        currentPlayerElements = null;
+      });
+
+      audio.addEventListener('pause', () => {
+        // Если пауза вызвана не нашим кодом (например, другой плеер), обновим кнопку
+        if (currentAudio === audio && !audio.ended) {
+          playBtn.textContent = '▶ Play';
+          playBtn.classList.remove('playing');
+        }
+      });
+
+      audio.play()
         .then(() => {
-          buttonElement.textContent = '⏸ Pause';
-          buttonElement.classList.add('playing');
+          playBtn.textContent = '⏸ Pause';
+          playBtn.classList.add('playing');
         })
         .catch(err => {
           showSnackbar('❌ Ошибка воспроизведения');
           console.error(err);
+          currentAudio = null;
+          currentPlayerElements = null;
         });
 
-      currentAudio.onended = () => {
-        buttonElement.textContent = '▶ Play';
-        buttonElement.classList.remove('playing');
+      // Обработчик ошибок
+      audio.onerror = () => {
+        showSnackbar('❌ Ошибка загрузки аудио');
+        playBtn.textContent = '▶ Play';
+        playBtn.classList.remove('playing');
+        progressBar.style.width = '0%';
+        const range = progressContainer.querySelector('input[type="range"]');
+        if (range) range.value = 0;
+        timeDisplay.textContent = `00:00 / 00:00`;
         currentAudio = null;
+        currentPlayerElements = null;
       };
 
-      currentAudio.onerror = () => {
-        showSnackbar('❌ Ошибка загрузки аудио');
-        buttonElement.textContent = '▶ Play';
-        buttonElement.classList.remove('playing');
-        currentAudio = null;
-      };
+      // Обработчик перемотки (при клике на прогресс-бар или перетаскивании ползунка)
+      const rangeInput = progressContainer.querySelector('input[type="range"]');
+      if (rangeInput) {
+        rangeInput.addEventListener('input', function() {
+          if (audio && audio.duration) {
+            const val = parseFloat(this.value);
+            audio.currentTime = val;
+            const progress = (val / audio.duration) * 100;
+            progressBar.style.width = progress + '%';
+            const current = formatTime(val);
+            const total = formatTime(audio.duration);
+            timeDisplay.textContent = `${current} / ${total}`;
+          }
+        });
+      }
+
+      // Клик по прогресс-бару для перемотки
+      progressContainer.addEventListener('click', function(e) {
+        if (e.target === rangeInput) return; // уже обработано
+        const rect = this.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width;
+        if (audio && audio.duration) {
+          const newTime = x * audio.duration;
+          audio.currentTime = newTime;
+          const range = this.querySelector('input[type="range"]');
+          if (range) {
+            range.value = newTime;
+          }
+          const progress = (newTime / audio.duration) * 100;
+          progressBar.style.width = progress + '%';
+          const current = formatTime(newTime);
+          const total = formatTime(audio.duration);
+          timeDisplay.textContent = `${current} / ${total}`;
+        }
+      });
+    }
+
+    // Форматирование времени MM:SS
+    function formatTime(seconds) {
+      if (isNaN(seconds) || !isFinite(seconds)) return '00:00';
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
     }
 
     // ============================================================
@@ -1015,7 +1210,7 @@
     });
 
     // ============================================================
-    // 14. РЕНДЕР СПИСКА
+    // 14. РЕНДЕР СПИСКА (с плеером)
     // ============================================================
     function renderBeats() {
       let filtered = beats;
@@ -1057,6 +1252,28 @@
           </div>
         `;
 
+        // Блок с плеером или надписью "нет аудио"
+        let playerHtml = '';
+        if (beat.audioUrl) {
+          // Уникальный ID для элементов плеера
+          const uid = 'player-' + beat.id.replace(/[^a-zA-Z0-9]/g, '');
+          playerHtml = `
+            <div class="audio-player" id="${uid}">
+              <div class="audio-controls">
+                <button class="play-btn" data-url="${beat.audioUrl}">▶ Play</button>
+                <div class="progress-container" data-beat-id="${beat.id}">
+                  <div class="progress-bar" style="width:0%"></div>
+                  <input type="range" min="0" max="100" value="0" step="0.1">
+                </div>
+                <span class="time-display">00:00 / 00:00</span>
+              </div>
+            </div>
+          `;
+        } else {
+          playerHtml = `<span class="no-audio">🎵 нет аудио</span>`;
+        }
+
+        // Кнопки действий для владельца
         let actionsHtml = '';
         if (isOwner) {
           let actionText, actionClass = '';
@@ -1076,11 +1293,6 @@
           `;
         }
 
-        const hasAudio = beat.audioUrl ? true : false;
-        const playBtnHtml = hasAudio
-          ? `<button class="play-btn" data-url="${beat.audioUrl}">▶ Play</button>`
-          : `<span style="font-size:12px;color:var(--secondary-text);opacity:0.5;">🎵 нет аудио</span>`;
-
         card.innerHTML = `
           <div class="beat-left">
             <div class="beat-name">${beat.name}</div>
@@ -1095,25 +1307,34 @@
             ${licensesHtml}
           </div>
           <div class="beat-right">
-            ${playBtnHtml}
+            ${playerHtml}
             ${actionsHtml}
           </div>
         `;
 
+        // Обработчик клика по карточке
         card.addEventListener('click', (e) => {
           if (e.target.closest('button')) return;
           showSnackbar(`Бит "${beat.name}" – ${statusText}`);
         });
 
-        const playBtn = card.querySelector('.play-btn');
-        if (playBtn) {
-          playBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const url = playBtn.dataset.url;
-            playAudio(url, playBtn);
-          });
+        // Если есть аудио, инициализируем плеер
+        if (beat.audioUrl) {
+          const playBtn = card.querySelector('.play-btn');
+          const progressBar = card.querySelector('.progress-bar');
+          const timeDisplay = card.querySelector('.time-display');
+          const progressContainer = card.querySelector('.progress-container');
+
+          if (playBtn && progressBar && timeDisplay && progressContainer) {
+            playBtn.addEventListener('click', function(e) {
+              e.stopPropagation();
+              const url = this.dataset.url;
+              togglePlay(beat.id, url, this, progressBar, timeDisplay, progressContainer);
+            });
+          }
         }
 
+        // Обработчики для владельца
         if (isOwner) {
           const actionBtn = card.querySelector('.action-btn');
           if (actionBtn) {
