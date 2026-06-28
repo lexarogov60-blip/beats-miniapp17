@@ -9,7 +9,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    /* ===== ВЕСЬ CSS (обновлённый) ===== */
+    /* ===== ОБЩИЕ СТИЛИ (уменьшены отступы и шрифты) ===== */
     * {
       margin: 0;
       padding: 0;
@@ -19,7 +19,7 @@
 
     body {
       min-height: 100vh;
-      padding: 20px 16px 40px;
+      padding: 12px 10px 30px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -71,14 +71,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .header h1 {
       font-family: 'Permanent Marker', cursive;
-      font-size: 40px;
+      font-size: 30px;
       font-weight: 400;
-      letter-spacing: 2px;
+      letter-spacing: 1px;
       background: linear-gradient(135deg, var(--accent), #6b21a5);
       -webkit-background-clip: text;
       background-clip: text;
@@ -88,20 +88,20 @@
         4px 4px 0 rgba(0, 0, 0, 0.15),
         6px 6px 0 rgba(0, 0, 0, 0.1),
         0 0 40px var(--accent-glow);
-      transform: rotate(-1deg) scale(1.02);
+      transform: rotate(-0.5deg) scale(1.01);
       transition: transform 0.3s ease;
     }
 
     .header h1:hover {
-      transform: rotate(0deg) scale(1.05);
+      transform: rotate(0deg) scale(1.03);
     }
 
     .header span {
-      font-size: 13px;
+      font-size: 11px;
       color: var(--secondary-text);
       background: var(--glass-bg);
       backdrop-filter: blur(8px);
-      padding: 4px 14px;
+      padding: 2px 10px;
       border-radius: 30px;
       font-weight: 500;
       border: 1px solid var(--glass-border);
@@ -109,45 +109,45 @@
     }
 
     .greeting {
-      margin-bottom: 24px;
+      margin-bottom: 16px;
     }
 
     .greeting h2 {
       font-family: 'Permanent Marker', cursive;
-      font-size: 32px;
+      font-size: 24px;
       font-weight: 400;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
       color: #ffffff;
       text-shadow: 
         1px 1px 0 rgba(0, 0, 0, 0.2),
         3px 3px 0 rgba(0, 0, 0, 0.15),
         0 0 40px rgba(255, 255, 255, 0.4),
         0 0 80px rgba(255, 255, 255, 0.2);
-      transform: rotate(-0.5deg);
-      margin-bottom: 4px;
+      transform: rotate(-0.3deg);
+      margin-bottom: 2px;
     }
 
     .greeting p {
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 400;
       color: var(--secondary-text);
-      letter-spacing: 0.2px;
+      letter-spacing: 0.1px;
       text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
     }
 
     .search-container {
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .search-container input {
       width: 100%;
-      padding: 12px 16px;
+      padding: 8px 14px;
       border-radius: 30px;
       border: 1px solid var(--glass-border);
       background: var(--input-bg);
       backdrop-filter: blur(8px);
       color: var(--text);
-      font-size: 15px;
+      font-size: 13px;
       outline: none;
       transition: 0.3s;
       box-shadow: var(--glass-shadow), 0 0 0 0 var(--accent-glow);
@@ -164,13 +164,13 @@
       color: #fff;
       border: none;
       border-radius: 30px;
-      padding: 8px 20px;
-      font-size: 14px;
+      padding: 6px 16px;
+      font-size: 13px;
       font-weight: 600;
       cursor: pointer;
       transition: 0.3s;
       box-shadow: 0 0 20px var(--accent-glow), 0 4px 15px rgba(0,0,0,0.2);
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .add-beat-btn:active {
@@ -182,12 +182,12 @@
       backdrop-filter: blur(16px);
       border: 1px solid var(--glass-border);
       border-radius: 16px;
-      padding: 16px 18px;
-      margin-bottom: 16px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
       box-shadow: var(--shadow-deep), 0 0 30px var(--accent-glow);
       display: none;
       flex-direction: column;
-      gap: 12px;
+      gap: 8px;
     }
 
     .add-form.visible {
@@ -196,22 +196,22 @@
 
     .add-form .form-row {
       display: flex;
-      gap: 12px;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
     .add-form .form-row input {
       flex: 1;
-      padding: 10px 14px;
+      padding: 8px 12px;
       border-radius: 30px;
       border: 1px solid var(--glass-border);
       background: var(--input-bg);
       backdrop-filter: blur(4px);
       color: var(--text);
-      font-size: 14px;
+      font-size: 13px;
       outline: none;
       transition: 0.3s;
-      min-width: 120px;
+      min-width: 80px;
       box-shadow: inset 0 2px 6px rgba(0,0,0,0.05);
     }
 
@@ -227,23 +227,23 @@
     .add-form .file-row {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
     }
 
     .add-form .file-row label {
-      font-size: 13px;
+      font-size: 12px;
       color: var(--secondary-text);
       font-weight: 500;
     }
 
     .add-form .file-row input[type="file"] {
-      padding: 8px 12px;
+      padding: 6px 10px;
       border-radius: 30px;
       border: 1px solid var(--glass-border);
       background: var(--input-bg);
       backdrop-filter: blur(4px);
       color: var(--text);
-      font-size: 13px;
+      font-size: 12px;
       outline: none;
       transition: 0.3s;
       cursor: pointer;
@@ -259,12 +259,12 @@
       color: #fff;
       border: none;
       border-radius: 30px;
-      padding: 4px 14px;
-      font-size: 12px;
+      padding: 2px 12px;
+      font-size: 11px;
       font-weight: 600;
       cursor: pointer;
       transition: 0.2s;
-      margin-right: 12px;
+      margin-right: 10px;
     }
 
     .add-form .file-row input[type="file"]::file-selector-button:hover {
@@ -273,15 +273,15 @@
 
     .add-form .form-actions {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       justify-content: flex-end;
     }
 
     .add-form .form-actions button {
-      padding: 8px 20px;
+      padding: 6px 16px;
       border-radius: 30px;
       border: none;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       cursor: pointer;
       transition: 0.2s;
@@ -306,8 +306,8 @@
 
     .filters {
       display: flex;
-      gap: 12px;
-      margin-bottom: 24px;
+      gap: 8px;
+      margin-bottom: 16px;
       flex-wrap: wrap;
       justify-content: center;
     }
@@ -317,9 +317,9 @@
       backdrop-filter: blur(8px);
       color: var(--secondary-text);
       border: 1px solid var(--glass-border);
-      padding: 8px 18px;
+      padding: 4px 14px;
       border-radius: 30px;
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 500;
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s ease, color 0.3s;
@@ -345,7 +345,7 @@
     .beat-list {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 12px;
       width: 100%;
     }
 
@@ -353,8 +353,8 @@
       background: var(--glass-bg);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border-radius: 16px;
-      padding: 16px 18px;
+      border-radius: 14px;
+      padding: 10px 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -363,12 +363,13 @@
       transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
       cursor: default;
       width: 100%;
+      flex-wrap: wrap;
     }
 
     .beat-card:hover {
-      transform: scale(1.02);
+      transform: scale(1.01);
       background: var(--card-hover-bg);
-      box-shadow: var(--shadow-deep), 0 0 40px var(--accent-glow);
+      box-shadow: var(--shadow-deep), 0 0 30px var(--accent-glow);
     }
 
     .beat-card:active {
@@ -378,46 +379,46 @@
     .beat-left {
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      flex: 1;
+      gap: 3px;
+      flex: 1 1 60%;
       min-width: 0;
     }
 
     .beat-name {
-      font-size: 18px;
+      font-size: 15px;
       font-weight: 600;
       text-shadow: 0 0 12px var(--accent-glow);
     }
 
     .beat-details {
-      font-size: 14px;
+      font-size: 12px;
       color: var(--secondary-text);
       display: flex;
-      gap: 12px;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
     .beat-details span {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
     }
 
     .beat-status {
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 14px;
+      gap: 5px;
+      font-size: 12px;
       font-weight: 500;
-      margin-top: 4px;
+      margin-top: 2px;
     }
 
     .status-dot {
-      width: 12px;
-      height: 12px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       display: inline-block;
-      box-shadow: 0 0 10px var(--dot-shadow);
+      box-shadow: 0 0 8px var(--dot-shadow);
     }
 
     .status-dot.free { background: #22c55e; }
@@ -427,17 +428,17 @@
     .beat-licenses {
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      margin-top: 6px;
-      font-size: 13px;
+      gap: 2px;
+      margin-top: 4px;
+      font-size: 11px;
       color: var(--secondary-text);
-      letter-spacing: 0.2px;
+      letter-spacing: 0.1px;
     }
 
     .beat-licenses .license-item {
       display: flex;
       align-items: baseline;
-      gap: 6px;
+      gap: 4px;
     }
 
     .beat-licenses .license-item .price {
@@ -450,14 +451,17 @@
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 8px;
+      gap: 6px;
+      flex: 0 0 auto;
+      max-width: 45%;
     }
 
     .beat-actions {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       align-items: center;
       flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
     .action-btn {
@@ -465,12 +469,12 @@
       color: #fff;
       border: none;
       border-radius: 30px;
-      padding: 6px 16px;
-      font-size: 13px;
+      padding: 4px 12px;
+      font-size: 11px;
       font-weight: 600;
       cursor: pointer;
       transition: 0.2s;
-      box-shadow: 0 0 20px var(--accent-glow), 0 2px 10px rgba(0,0,0,0.2);
+      box-shadow: 0 0 16px var(--accent-glow), 0 2px 8px rgba(0,0,0,0.15);
     }
 
     .action-btn:active {
@@ -479,7 +483,7 @@
 
     .action-btn.bought-btn {
       background: #ef4444;
-      box-shadow: 0 0 20px rgba(239, 68, 68, 0.3), 0 2px 10px rgba(0,0,0,0.2);
+      box-shadow: 0 0 16px rgba(239, 68, 68, 0.3), 0 2px 8px rgba(0,0,0,0.15);
     }
 
     .action-btn:disabled {
@@ -494,34 +498,35 @@
       color: var(--delete-color);
       border: 1px solid var(--delete-color);
       border-radius: 30px;
-      padding: 4px 10px;
-      font-size: 14px;
+      padding: 2px 8px;
+      font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       transition: 0.2s;
       opacity: 0.6;
       line-height: 1.4;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     }
 
     .delete-btn:hover {
       opacity: 1;
       background: var(--delete-color);
       color: #fff;
-      box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+      box-shadow: 0 0 16px rgba(239, 68, 68, 0.3);
     }
 
     .delete-btn:active {
       transform: scale(0.9);
     }
 
-    /* ===== НОВЫЙ ПЛЕЕР (вертикальный: кнопка сверху, ползунок + таймер под ней) ===== */
+    /* ===== КОМПАКТНЫЙ ПЛЕЕР ===== */
     .audio-player {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 6px;
-      width: 160px;
+      gap: 4px;
+      width: 100%;
+      max-width: 150px;
     }
 
     .audio-player .play-btn {
@@ -529,14 +534,13 @@
       color: var(--accent);
       border: 1px solid var(--accent);
       border-radius: 30px;
-      padding: 2px 14px;
-      font-size: 14px;
+      padding: 1px 10px;
+      font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       transition: 0.2s;
       opacity: 0.7;
-      line-height: 1.6;
-      flex-shrink: 0;
+      line-height: 1.5;
       align-self: flex-start;
     }
 
@@ -544,13 +548,13 @@
       opacity: 1;
       background: var(--accent);
       color: #fff;
-      box-shadow: 0 0 20px var(--accent-glow);
+      box-shadow: 0 0 16px var(--accent-glow);
     }
 
     .audio-player .play-btn.playing {
       background: var(--accent);
       color: #fff;
-      box-shadow: 0 0 30px var(--accent-glow);
+      box-shadow: 0 0 20px var(--accent-glow);
     }
 
     .audio-player .play-btn:active {
@@ -560,18 +564,18 @@
     .audio-player .progress-row {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 5px;
       width: 100%;
     }
 
     .audio-player .progress-container {
       flex: 1;
-      height: 4px;
+      height: 3px;
       background: var(--secondary-text);
       border-radius: 2px;
       cursor: pointer;
       position: relative;
-      min-width: 40px;
+      min-width: 30px;
     }
 
     .audio-player .progress-bar {
@@ -580,15 +584,15 @@
       background: var(--accent);
       border-radius: 2px;
       transition: width 0.1s linear;
-      box-shadow: 0 0 10px var(--accent-glow);
+      box-shadow: 0 0 8px var(--accent-glow);
     }
 
     .audio-player .progress-container input[type="range"] {
       position: absolute;
-      top: -6px;
+      top: -5px;
       left: 0;
       width: 100%;
-      height: 16px;
+      height: 13px;
       margin: 0;
       padding: 0;
       opacity: 0;
@@ -596,45 +600,32 @@
     }
 
     .audio-player .time-display {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--secondary-text);
-      letter-spacing: 0.3px;
+      letter-spacing: 0.2px;
       font-variant-numeric: tabular-nums;
       flex-shrink: 0;
-      min-width: 70px;
+      min-width: 60px;
       text-align: right;
     }
 
     .no-audio {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--secondary-text);
       opacity: 0.5;
     }
 
-    @media (max-width: 500px) {
-      .audio-player {
-        width: 140px;
-      }
-      .audio-player .progress-container {
-        min-width: 30px;
-      }
-      .audio-player .time-display {
-        font-size: 10px;
-        min-width: 60px;
-      }
-    }
-
     .snackbar {
       position: fixed;
-      bottom: 40px;
+      bottom: 30px;
       left: 50%;
       transform: translateX(-50%);
       background: var(--glass-bg);
       backdrop-filter: blur(16px);
       color: var(--text);
-      padding: 12px 24px;
+      padding: 8px 20px;
       border-radius: 30px;
-      font-size: 14px;
+      font-size: 13px;
       opacity: 0;
       transition: opacity 0.3s;
       pointer-events: none;
@@ -652,41 +643,40 @@
       background: var(--glass-bg);
       backdrop-filter: blur(8px);
       border: 1px solid var(--glass-border);
-      border-radius: 12px;
-      padding: 12px 16px;
-      margin-bottom: 20px;
+      border-radius: 10px;
+      padding: 8px 12px;
+      margin-bottom: 14px;
       text-align: center;
-      font-size: 14px;
+      font-size: 12px;
       color: var(--secondary-text);
       box-shadow: var(--shadow-deep);
       width: 100%;
     }
 
+    @media (max-width: 500px) {
+      .beat-left { flex: 1 1 100%; }
+      .beat-right { flex: 1 1 100%; align-items: stretch; max-width: 100%; }
+      .audio-player { max-width: 100%; }
+      .audio-player .play-btn { align-self: center; }
+      .audio-player .progress-row { flex-wrap: wrap; justify-content: space-between; }
+      .audio-player .progress-container { flex: 1 1 100%; order: 0; }
+      .audio-player .time-display { order: 1; min-width: auto; }
+    }
+
     @media (max-width: 400px) {
-      .header h1 { font-size: 32px; }
-      .greeting h2 { font-size: 26px; }
-      .greeting p { font-size: 15px; }
-      .beat-card { flex-wrap: wrap; }
-      .beat-right { align-items: flex-start; margin-top: 8px; width: 100%; flex-direction: row; justify-content: flex-end; }
-      .beat-actions { flex-wrap: wrap; }
+      .header h1 { font-size: 26px; }
+      .greeting h2 { font-size: 20px; }
+      .greeting p { font-size: 13px; }
+      .beat-card { padding: 8px 10px; }
+      .beat-name { font-size: 14px; }
+      .beat-details { font-size: 11px; }
+      .beat-status { font-size: 11px; }
+      .beat-licenses { font-size: 10px; }
+      .action-btn { font-size: 10px; padding: 2px 10px; }
+      .delete-btn { font-size: 11px; padding: 1px 6px; }
+      .audio-player .play-btn { font-size: 11px; padding: 1px 8px; }
+      .audio-player .time-display { font-size: 9px; min-width: 50px; }
       .add-form .form-row { flex-direction: column; }
-      .add-form .file-row input[type="file"] { font-size: 12px; }
-      .audio-player {
-        width: 100%;
-        align-items: stretch;
-      }
-      .audio-player .progress-row {
-        flex-wrap: wrap;
-        justify-content: flex-end;
-      }
-      .audio-player .progress-container {
-        flex: 1 1 100%;
-        order: 0;
-      }
-      .audio-player .time-display {
-        min-width: auto;
-        order: 1;
-      }
     }
   </style>
 </head>
@@ -718,8 +708,8 @@
     <div class="add-form" id="addForm">
       <div class="form-row">
         <input type="text" id="newName" placeholder="Название бита" autocomplete="off">
-        <input type="number" id="newBpm" placeholder="BPM (число)" autocomplete="off">
-        <input type="text" id="newKey" placeholder="Тональность (например, D Minor)" autocomplete="off">
+        <input type="number" id="newBpm" placeholder="BPM" autocomplete="off">
+        <input type="text" id="newKey" placeholder="Тональность" autocomplete="off">
       </div>
       <div class="file-row">
         <label for="audioFile">🎵 Загрузить MP3 (необязательно)</label>
@@ -869,7 +859,6 @@
     let currentFilter = 'all';
     let searchQuery = '';
 
-    // Глобальные переменные для управления плеером
     let currentAudio = null;
     let currentPlayerElements = null;
 
@@ -1039,7 +1028,6 @@
         return;
       }
 
-      // Если уже играет этот же трек — ставим на паузу
       if (currentAudio && !currentAudio.paused && currentAudio.src === url) {
         currentAudio.pause();
         playBtn.textContent = '▶ Play';
@@ -1047,7 +1035,6 @@
         return;
       }
 
-      // Если есть другой активный аудио — останавливаем его и сбрасываем плеер
       if (currentAudio) {
         currentAudio.pause();
         if (currentPlayerElements) {
@@ -1056,17 +1043,14 @@
         }
       }
 
-      // Создаём новое аудио
       const audio = new Audio(url);
       currentAudio = audio;
       currentPlayerElements = { playBtn, progressBar, timeDisplay, progressContainer };
 
       audio.addEventListener('loadedmetadata', () => {
-        // Обновляем общее время
         const total = formatTime(audio.duration);
         const current = formatTime(audio.currentTime);
         timeDisplay.textContent = `${current} / ${total}`;
-        // Устанавливаем max для range
         const range = progressContainer.querySelector('input[type="range"]');
         if (range) {
           range.max = audio.duration;
@@ -1132,7 +1116,6 @@
         currentPlayerElements = null;
       };
 
-      // Обработчик перемотки через ползунок
       const rangeInput = progressContainer.querySelector('input[type="range"]');
       if (rangeInput) {
         rangeInput.addEventListener('input', function() {
@@ -1148,7 +1131,6 @@
         });
       }
 
-      // Клик по прогресс-бару
       progressContainer.addEventListener('click', function(e) {
         if (e.target === rangeInput) return;
         const rect = this.getBoundingClientRect();
@@ -1206,7 +1188,7 @@
     });
 
     // ============================================================
-    // 14. РЕНДЕР СПИСКА (с плеером)
+    // 14. РЕНДЕР СПИСКА
     // ============================================================
     function renderBeats() {
       let filtered = beats;
@@ -1220,7 +1202,7 @@
       }
 
       if (filtered.length === 0) {
-        beatList.innerHTML = `<div style="text-align:center;color:var(--secondary-text);padding:40px 0;">Нет битов, соответствующих запросу</div>`;
+        beatList.innerHTML = `<div style="text-align:center;color:var(--secondary-text);padding:30px 0;">Нет битов, соответствующих запросу</div>`;
         return;
       }
 
@@ -1248,7 +1230,6 @@
           </div>
         `;
 
-        // Блок с плеером или надписью "нет аудио"
         let playerHtml = '';
         if (beat.audioUrl) {
           playerHtml = `
@@ -1267,7 +1248,6 @@
           playerHtml = `<span class="no-audio">🎵 нет аудио</span>`;
         }
 
-        // Кнопки действий для владельца
         let actionsHtml = '';
         if (isOwner) {
           let actionText, actionClass = '';
@@ -1311,7 +1291,6 @@
           showSnackbar(`Бит "${beat.name}" – ${statusText}`);
         });
 
-        // Если есть аудио, инициализируем плеер
         if (beat.audioUrl) {
           const playBtn = card.querySelector('.play-btn');
           const progressBar = card.querySelector('.progress-bar');
@@ -1327,7 +1306,6 @@
           }
         }
 
-        // Обработчики для владельца
         if (isOwner) {
           const actionBtn = card.querySelector('.action-btn');
           if (actionBtn) {
