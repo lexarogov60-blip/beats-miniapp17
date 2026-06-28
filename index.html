@@ -62,7 +62,7 @@
 
     .container {
       width: 100%;
-      max-width: 360px;  /* ← уменьшено с 440px до 360px */
+      max-width: 360px;
       display: flex;
       flex-direction: column;
       margin: 0 auto;
@@ -342,9 +342,10 @@
       transform: scale(0.95);
     }
 
+    /* ===== КВАДРАТНЫЕ КАРТОЧКИ ===== */
     .beat-list {
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 10px;
       width: 100%;
     }
@@ -354,47 +355,52 @@
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-radius: 12px;
-      padding: 8px 10px;
+      padding: 8px;
       display: flex;
+      flex-direction: column;
       justify-content: space-between;
-      align-items: center;
       border: 1px solid var(--glass-border);
       box-shadow: var(--shadow-deep), 0 0 0 0 var(--accent-glow);
       transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
       cursor: default;
+      aspect-ratio: 1 / 1;
       width: 100%;
-      flex-wrap: wrap;
+      overflow: hidden;
     }
 
     .beat-card:hover {
-      transform: scale(1.01);
+      transform: scale(1.02);
       background: var(--card-hover-bg);
       box-shadow: var(--shadow-deep), 0 0 20px var(--accent-glow);
     }
 
     .beat-card:active {
-      transform: scale(0.98);
+      transform: scale(0.97);
     }
 
     .beat-left {
       display: flex;
       flex-direction: column;
       gap: 2px;
-      flex: 1 1 55%;
+      flex: 1 1 auto;
       min-width: 0;
+      overflow: hidden;
     }
 
     .beat-name {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       text-shadow: 0 0 10px var(--accent-glow);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .beat-details {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--secondary-text);
       display: flex;
-      gap: 6px;
+      gap: 4px;
       flex-wrap: wrap;
     }
 
@@ -407,15 +413,15 @@
     .beat-status {
       display: flex;
       align-items: center;
-      gap: 4px;
-      font-size: 11px;
+      gap: 3px;
+      font-size: 10px;
       font-weight: 500;
       margin-top: 1px;
     }
 
     .status-dot {
-      width: 8px;
-      height: 8px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       display: inline-block;
       box-shadow: 0 0 6px var(--dot-shadow);
@@ -430,7 +436,7 @@
       flex-direction: column;
       gap: 1px;
       margin-top: 2px;
-      font-size: 10px;
+      font-size: 9px;
       color: var(--secondary-text);
       letter-spacing: 0.1px;
     }
@@ -438,27 +444,27 @@
     .beat-licenses .license-item {
       display: flex;
       align-items: baseline;
-      gap: 3px;
+      gap: 2px;
+      flex-wrap: wrap;
     }
 
     .beat-licenses .license-item .price {
       font-weight: 600;
       color: var(--accent);
-      text-shadow: 0 0 10px var(--accent-glow);
+      text-shadow: 0 0 8px var(--accent-glow);
     }
 
     .beat-right {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 4px;
-      flex: 0 1 40%;
-      max-width: 45%;
+      gap: 3px;
+      margin-top: 4px;
     }
 
     .beat-actions {
       display: flex;
-      gap: 4px;
+      gap: 3px;
       align-items: center;
       flex-wrap: wrap;
       justify-content: flex-end;
@@ -469,12 +475,12 @@
       color: #fff;
       border: none;
       border-radius: 30px;
-      padding: 2px 10px;
-      font-size: 10px;
+      padding: 1px 8px;
+      font-size: 9px;
       font-weight: 600;
       cursor: pointer;
       transition: 0.2s;
-      box-shadow: 0 0 12px var(--accent-glow), 0 1px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 0 10px var(--accent-glow), 0 1px 4px rgba(0,0,0,0.1);
     }
 
     .action-btn:active {
@@ -483,7 +489,7 @@
 
     .action-btn.bought-btn {
       background: #ef4444;
-      box-shadow: 0 0 12px rgba(239, 68, 68, 0.3), 0 1px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.3), 0 1px 4px rgba(0,0,0,0.1);
     }
 
     .action-btn:disabled {
@@ -498,13 +504,13 @@
       color: var(--delete-color);
       border: 1px solid var(--delete-color);
       border-radius: 30px;
-      padding: 1px 6px;
-      font-size: 10px;
+      padding: 0px 5px;
+      font-size: 9px;
       font-weight: 600;
       cursor: pointer;
       transition: 0.2s;
       opacity: 0.6;
-      line-height: 1.5;
+      line-height: 1.6;
       box-shadow: 0 1px 4px rgba(0,0,0,0.05);
     }
 
@@ -512,21 +518,21 @@
       opacity: 1;
       background: var(--delete-color);
       color: #fff;
-      box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
     }
 
     .delete-btn:active {
       transform: scale(0.9);
     }
 
-    /* ===== ПЛЕЕР ===== */
+    /* ===== ПЛЕЕР (компактный) ===== */
     .audio-player {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 3px;
+      gap: 2px;
       width: 100%;
-      max-width: 130px;
+      max-width: 120px;
     }
 
     .audio-player .play-btn {
@@ -534,8 +540,8 @@
       color: var(--accent);
       border: 1px solid var(--accent);
       border-radius: 30px;
-      padding: 1px 8px;
-      font-size: 10px;
+      padding: 0px 6px;
+      font-size: 9px;
       font-weight: 600;
       cursor: pointer;
       transition: 0.2s;
@@ -548,13 +554,13 @@
       opacity: 1;
       background: var(--accent);
       color: #fff;
-      box-shadow: 0 0 12px var(--accent-glow);
+      box-shadow: 0 0 10px var(--accent-glow);
     }
 
     .audio-player .play-btn.playing {
       background: var(--accent);
       color: #fff;
-      box-shadow: 0 0 16px var(--accent-glow);
+      box-shadow: 0 0 12px var(--accent-glow);
     }
 
     .audio-player .play-btn:active {
@@ -564,18 +570,18 @@
     .audio-player .progress-row {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
       width: 100%;
     }
 
     .audio-player .progress-container {
       flex: 1;
-      height: 3px;
+      height: 2px;
       background: var(--secondary-text);
       border-radius: 2px;
       cursor: pointer;
       position: relative;
-      min-width: 30px;
+      min-width: 20px;
     }
 
     .audio-player .progress-bar {
@@ -584,15 +590,15 @@
       background: var(--accent);
       border-radius: 2px;
       transition: width 0.1s linear;
-      box-shadow: 0 0 6px var(--accent-glow);
+      box-shadow: 0 0 4px var(--accent-glow);
     }
 
     .audio-player .progress-container input[type="range"] {
       position: absolute;
-      top: -5px;
+      top: -4px;
       left: 0;
       width: 100%;
-      height: 12px;
+      height: 10px;
       margin: 0;
       padding: 0;
       opacity: 0;
@@ -600,17 +606,17 @@
     }
 
     .audio-player .time-display {
-      font-size: 9px;
+      font-size: 8px;
       color: var(--secondary-text);
       letter-spacing: 0.2px;
       font-variant-numeric: tabular-nums;
       flex-shrink: 0;
-      min-width: 54px;
+      min-width: 44px;
       text-align: right;
     }
 
     .no-audio {
-      font-size: 10px;
+      font-size: 9px;
       color: var(--secondary-text);
       opacity: 0.5;
     }
@@ -653,31 +659,35 @@
       width: 100%;
     }
 
+    /* ===== МОБИЛЬНАЯ АДАПТАЦИЯ ===== */
     @media (max-width: 480px) {
       .container { max-width: 100%; padding: 0 4px; }
-      .beat-left { flex: 1 1 100%; }
-      .beat-right { flex: 1 1 100%; align-items: stretch; max-width: 100%; }
-      .audio-player { max-width: 100%; }
-      .audio-player .play-btn { align-self: center; }
-      .audio-player .progress-row { flex-wrap: wrap; justify-content: space-between; }
-      .audio-player .progress-container { flex: 1 1 100%; order: 0; }
-      .audio-player .time-display { order: 1; min-width: auto; }
+      .beat-list { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .beat-card { aspect-ratio: 1 / 1; padding: 6px; }
+      .beat-name { font-size: 12px; }
+      .beat-details { font-size: 9px; }
+      .beat-status { font-size: 9px; }
+      .beat-licenses { font-size: 8px; }
+      .action-btn { font-size: 8px; padding: 1px 6px; }
+      .delete-btn { font-size: 8px; padding: 0px 4px; }
+      .audio-player .play-btn { font-size: 8px; padding: 0px 5px; }
+      .audio-player .time-display { font-size: 7px; min-width: 36px; }
     }
 
     @media (max-width: 380px) {
       .header h1 { font-size: 24px; }
       .greeting h2 { font-size: 19px; }
       .greeting p { font-size: 12px; }
-      .beat-card { padding: 6px 8px; }
-      .beat-name { font-size: 13px; }
-      .beat-details { font-size: 10px; }
-      .beat-status { font-size: 10px; }
-      .beat-licenses { font-size: 9px; }
-      .action-btn { font-size: 9px; padding: 1px 8px; }
-      .delete-btn { font-size: 9px; padding: 1px 5px; }
-      .audio-player .play-btn { font-size: 9px; padding: 1px 7px; }
-      .audio-player .time-display { font-size: 8px; min-width: 44px; }
-      .filters button { font-size: 10px; padding: 2px 10px; }
+      .beat-list { grid-template-columns: 1fr 1fr; gap: 6px; }
+      .beat-card { padding: 4px; }
+      .beat-name { font-size: 11px; }
+      .beat-details { font-size: 8px; }
+      .beat-status { font-size: 8px; }
+      .beat-licenses { font-size: 7px; }
+      .action-btn { font-size: 7px; padding: 0px 5px; }
+      .delete-btn { font-size: 7px; padding: 0px 3px; }
+      .audio-player .play-btn { font-size: 7px; padding: 0px 4px; }
+      .audio-player .time-display { font-size: 6px; min-width: 30px; }
     }
   </style>
 </head>
@@ -1203,7 +1213,7 @@
       }
 
       if (filtered.length === 0) {
-        beatList.innerHTML = `<div style="text-align:center;color:var(--secondary-text);padding:20px 0;font-size:13px;">Нет битов, соответствующих запросу</div>`;
+        beatList.innerHTML = `<div style="text-align:center;color:var(--secondary-text);padding:20px 0;font-size:13px;grid-column:1/-1;">Нет битов, соответствующих запросу</div>`;
         return;
       }
 
