@@ -9,7 +9,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    /* ===== ВСЕ СТИЛИ (ПОЛНАЯ ВЕРСИЯ) ===== */
+    /* ===== ВСЕ СТИЛИ ===== */
     * {
       margin: 0;
       padding: 0;
@@ -96,7 +96,13 @@
       transform: rotate(0deg) scale(1.03);
     }
 
-    .header span {
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .header span.version {
       font-size: 11px;
       color: var(--secondary-text);
       background: var(--glass-bg);
@@ -106,6 +112,29 @@
       font-weight: 500;
       border: 1px solid var(--glass-border);
       box-shadow: var(--glass-shadow);
+    }
+
+    /* Ключик для входа (только в браузере) */
+    .login-key {
+      font-size: 16px;
+      cursor: pointer;
+      opacity: 0.6;
+      transition: 0.2s;
+      line-height: 1;
+      user-select: none;
+      padding: 2px 4px;
+      border-radius: 50%;
+    }
+
+    .login-key:hover {
+      opacity: 1;
+      transform: scale(1.15);
+      background: var(--glass-bg);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .login-key:active {
+      transform: scale(0.9);
     }
 
     .greeting {
@@ -680,31 +709,6 @@
       opacity: 0.5;
     }
 
-    /* Кнопка входа для владельца (только в браузере) */
-    .login-btn {
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 30px;
-      padding: 4px 16px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.3s;
-      box-shadow: 0 0 16px var(--accent-glow), 0 2px 8px rgba(0,0,0,0.15);
-      margin-bottom: 10px;
-      align-self: center;
-    }
-
-    .login-btn:hover {
-      transform: scale(1.02);
-      box-shadow: 0 0 24px var(--accent-glow), 0 4px 12px rgba(0,0,0,0.2);
-    }
-
-    .login-btn:active {
-      transform: scale(0.95);
-    }
-
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -869,7 +873,7 @@
       .edit-btn { width: 20px; height: 20px; font-size: 10px; }
       .time-display { font-size: 9px; min-width: 44px; }
       .filters button { font-size: 10px; padding: 2px 10px; }
-      .login-btn { font-size: 11px; padding: 3px 14px; }
+      .login-key { font-size: 14px; }
     }
   </style>
 </head>
@@ -878,7 +882,10 @@
   <div class="container">
     <div class="header">
       <h1>Sokx Beats</h1>
-      <span>app beta 0.1</span>
+      <div class="header-right">
+        <span class="login-key" id="loginKey" style="display:none;">🔑</span>
+        <span class="version">app beta 0.1</span>
+      </div>
     </div>
 
     <div class="greeting">
@@ -889,9 +896,6 @@
     <div id="readonlyBanner" class="readonly-banner" style="display:none;">
       ⚡ Вы просматриваете каталог. Только владелец может менять статусы, добавлять и удалять биты.
     </div>
-
-    <!-- Кнопка входа для владельца (показывается только в браузере, в Telegram скрыта) -->
-    <button id="loginBtn" class="login-btn" style="display:none;">🔑 Войти как владелец</button>
 
     <div class="search-container">
       <input type="text" id="searchInput" placeholder="Поиск по названию..." autocomplete="off">
@@ -1012,7 +1016,7 @@
     const newBpm = document.getElementById('newBpm');
     const newKey = document.getElementById('newKey');
     const audioFile = document.getElementById('audioFile');
-    const loginBtn = document.getElementById('loginBtn');
+    const loginKey = document.getElementById('loginKey');
 
     const editModal = document.getElementById('editModal');
     const editName = document.getElementById('editName');
@@ -1052,10 +1056,10 @@
         document.body.classList.add(webapp.colorScheme);
       });
     } else {
-      // Браузерный режим — НЕ вызываем prompt, показываем кнопку
+      // Браузерный режим — показываем ключик
       isTelegram = false;
       isOwner = false;
-      loginBtn.style.display = 'block'; // показываем кнопку
+      loginKey.style.display = 'inline-block';
 
       // Определяем тему по системным настройкам
       if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -1066,25 +1070,25 @@
     }
 
     // ============================================================
-    // 8. ФУНКЦИЯ ВХОДА ПО КНОПКЕ (только в браузере)
+    // 8. ФУНКЦИЯ ВХОДА ПО КЛЮЧИКУ
     // ============================================================
     function attemptLogin() {
       const input = prompt('Введите ваш Telegram ID (владелец):');
-      if (input === null) return; // нажали "Отмена"
+      if (input === null) return;
       const id = parseInt(input);
       if (!isNaN(id) && id === OWNER_ID) {
         isOwner = true;
-        loginBtn.style.display = 'none';
+        loginKey.style.display = 'none';
         readonlyBanner.style.display = 'none';
         addBeatContainer.style.display = 'block';
-        renderBeats(); // обновляем список (появляются кнопки)
+        renderBeats();
         showSnackbar('✅ Вы вошли как владелец!');
       } else {
         showSnackbar('❌ Неверный ID. Попробуйте снова.');
       }
     }
 
-    loginBtn.addEventListener('click', attemptLogin);
+    loginKey.addEventListener('click', attemptLogin);
 
     // ============================================================
     // 9. ОБНОВЛЕНИЕ ИНТЕРФЕЙСА В ЗАВИСИМОСТИ ОТ isOwner
@@ -1094,16 +1098,15 @@
         readonlyBanner.style.display = 'block';
         addBeatContainer.style.display = 'none';
         if (!isTelegram) {
-          loginBtn.style.display = 'block';
+          loginKey.style.display = 'inline-block';
         }
       } else {
         readonlyBanner.style.display = 'none';
         addBeatContainer.style.display = 'block';
-        loginBtn.style.display = 'none';
+        loginKey.style.display = 'none';
       }
     }
 
-    // Инициализация UI
     updateUI();
 
     // ============================================================
