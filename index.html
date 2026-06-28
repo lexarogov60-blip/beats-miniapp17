@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Sokx Beats</title>
-  <!-- Firebase SDK (только для базы данных) -->
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    /* ===== ВЕСЬ CSS ===== */
+    /* ===== ВЕСЬ CSS (полный, такой же как в прошлый раз) ===== */
     * {
       margin: 0;
       padding: 0;
@@ -650,12 +650,12 @@
 
   <script>
     // ============================================================
-    // 1. УКАЖИТЕ СВОЙ TELEGRAM ID (владелец)
+    // 1. ВАШ TELEGRAM ID (владелец)
     // ============================================================
-    const OWNER_ID = 1235354532;  // ← ЗАМЕНИТЕ НА СВОЙ ID
+    const OWNER_ID = 1235354532;
 
     // ============================================================
-    // 2. НАСТРОЙКИ CLOUDINARY (ваши данные)
+    // 2. НАСТРОЙКИ CLOUDINARY
     // ============================================================
     const CLOUDINARY_CLOUD_NAME = 'drmjtipw9';
     const CLOUDINARY_UPLOAD_PRESET = 'sokk_beats';
@@ -720,9 +720,10 @@
     let isOwner = false;
 
     // ============================================================
-    // 7. ОПРЕДЕЛЯЕМ ВЛАДЕЛЬЦА
+    // 7. ОПРЕДЕЛЯЕМ ВЛАДЕЛЬЦА (с разделением на Telegram и браузер)
     // ============================================================
     if (window.Telegram && Telegram.WebApp) {
+      // === TELEGRAM MINI APP ===
       const webapp = Telegram.WebApp;
       webapp.ready();
       webapp.expand();
@@ -744,16 +745,21 @@
         document.body.classList.add(webapp.colorScheme);
       });
     } else {
-      // Браузерный режим
-      const urlParams = new URLSearchParams(window.location.search);
-      const testOwner = urlParams.get('owner') === '1';
-      isOwner = testOwner;
-      if (testOwner) {
-        console.log('Тестовый режим: владелец');
-        setTimeout(() => showSnackbar('🧪 Тестовый режим владельца'), 500);
+      // === БРАУЗЕРНЫЙ РЕЖИМ (запрос ID через prompt) ===
+      const input = prompt('Введите ваш Telegram ID (если вы владелец) или нажмите "Отмена" для гостевого режима:');
+      if (input && !isNaN(input)) {
+        const id = parseInt(input);
+        isOwner = (id === OWNER_ID);
+        if (isOwner) {
+          alert('Вы вошли как владелец!');
+        } else {
+          alert('Вы гость. Статусы менять нельзя.');
+        }
       } else {
-        console.log('Браузерный режим: гость');
+        isOwner = false;
+        alert('Вы в гостевом режиме.');
       }
+      // Определяем тему по системным настройкам
       if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         document.body.classList.add('dark');
       } else {
@@ -881,7 +887,7 @@
     }
 
     // ============================================================
-    // 10. УДАЛЕНИЕ БИТА (аудио на Cloudinary остаётся)
+    // 10. УДАЛЕНИЕ БИТА
     // ============================================================
     function deleteBeat(id) {
       if (!isOwner) return;
