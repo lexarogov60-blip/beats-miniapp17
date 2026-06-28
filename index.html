@@ -357,14 +357,12 @@
       border-radius: 12px;
       padding: 8px 12px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      flex-direction: column;
       border: 1px solid var(--glass-border);
       box-shadow: var(--shadow-deep), 0 0 0 0 var(--accent-glow);
       transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
       cursor: default;
       width: 100%;
-      flex-wrap: wrap;
     }
 
     .beat-card:hover {
@@ -375,6 +373,15 @@
 
     .beat-card:active {
       transform: scale(0.98);
+    }
+
+    /* Верхняя часть карточки (информация + кнопки) */
+    .beat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      flex-wrap: wrap;
     }
 
     .beat-left {
@@ -465,6 +472,39 @@
       justify-content: flex-end;
     }
 
+    /* Кнопка Play */
+    .play-btn {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 30px;
+      padding: 1px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      opacity: 0.7;
+      line-height: 1.6;
+      align-self: flex-start;
+    }
+
+    .play-btn:hover {
+      opacity: 1;
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .play-btn.playing {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+
+    .play-btn:active {
+      transform: scale(0.9);
+    }
+
     .action-btn {
       background: var(--accent);
       color: #fff;
@@ -520,73 +560,38 @@
       transform: scale(0.9);
     }
 
-    /* ===== ПЛЕЕР С АНИМАЦИЕЙ ===== */
-    .audio-player {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
+    /* ===== ПЛЕЕР ВНИЗУ КАРТОЧКИ ===== */
+    .beat-player-wrapper {
       width: 100%;
-      max-width: 160px;
-    }
-
-    .audio-player .play-btn {
-      background: transparent;
-      color: var(--accent);
-      border: 1px solid var(--accent);
-      border-radius: 30px;
-      padding: 1px 10px;
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.2s;
-      opacity: 0.7;
-      line-height: 1.6;
-      align-self: flex-start;
-    }
-
-    .audio-player .play-btn:hover {
-      opacity: 1;
-      background: var(--accent);
-      color: #fff;
-      box-shadow: 0 0 12px var(--accent-glow);
-    }
-
-    .audio-player .play-btn.playing {
-      background: var(--accent);
-      color: #fff;
-      box-shadow: 0 0 16px var(--accent-glow);
-    }
-
-    .audio-player .play-btn:active {
-      transform: scale(0.9);
-    }
-
-    /* Контейнер для прогресса и таймера (скрыт по умолчанию) */
-    .audio-player .progress-wrapper {
-      max-height: 0;
-      opacity: 0;
       overflow: hidden;
+      max-height: 0;
       transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                  opacity 0.3s ease,
-                  margin 0.3s ease;
-      width: 100%;
+                  margin-top 0.3s ease;
       margin-top: 0;
     }
 
-    .audio-player .progress-wrapper.expanded {
-      max-height: 60px; /* достаточно, чтобы поместить ползунок и таймер */
-      opacity: 1;
-      margin-top: 4px;
+    .beat-player-wrapper.expanded {
+      max-height: 60px;
+      margin-top: 6px;
     }
 
-    .audio-player .progress-row {
+    .beat-player-inner {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      padding-top: 2px;
+      border-top: 1px solid var(--glass-border);
+      padding-bottom: 2px;
+    }
+
+    .beat-player-inner .progress-row {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
       width: 100%;
     }
 
-    .audio-player .progress-container {
+    .beat-player-inner .progress-container {
       flex: 1;
       height: 3px;
       background: var(--secondary-text);
@@ -596,7 +601,7 @@
       min-width: 30px;
     }
 
-    .audio-player .progress-bar {
+    .beat-player-inner .progress-bar {
       height: 100%;
       width: 0%;
       background: var(--accent);
@@ -605,7 +610,7 @@
       box-shadow: 0 0 6px var(--accent-glow);
     }
 
-    .audio-player .progress-container input[type="range"] {
+    .beat-player-inner .progress-container input[type="range"] {
       position: absolute;
       top: -5px;
       left: 0;
@@ -617,7 +622,7 @@
       cursor: pointer;
     }
 
-    .audio-player .time-display {
+    .beat-player-inner .time-display {
       font-size: 10px;
       color: var(--secondary-text);
       letter-spacing: 0.2px;
@@ -674,9 +679,8 @@
     @media (max-width: 480px) {
       .beat-left { flex: 1 1 100%; }
       .beat-right { flex: 1 1 100%; align-items: stretch; max-width: 100%; }
-      .audio-player { max-width: 100%; }
-      .audio-player .play-btn { align-self: center; }
-      .audio-player .progress-wrapper.expanded { max-height: 50px; }
+      .beat-right .play-btn { align-self: center; }
+      .beat-player-wrapper.expanded { max-height: 50px; }
     }
 
     @media (max-width: 380px) {
@@ -690,8 +694,8 @@
       .beat-licenses { font-size: 9px; }
       .action-btn { font-size: 9px; padding: 1px 8px; }
       .delete-btn { font-size: 9px; padding: 1px 5px; }
-      .audio-player .play-btn { font-size: 10px; padding: 1px 8px; }
-      .audio-player .time-display { font-size: 9px; min-width: 44px; }
+      .play-btn { font-size: 10px; padding: 1px 8px; }
+      .time-display { font-size: 9px; min-width: 44px; }
       .filters button { font-size: 10px; padding: 2px 10px; }
     }
   </style>
@@ -877,7 +881,7 @@
 
     // Глобальные переменные для плеера
     let currentAudio = null;
-    let currentPlayerElements = null; // { playBtn, progressWrapper, progressBar, timeDisplay, progressContainer, card }
+    let currentPlayerElements = null; // { playBtn, wrapper, progressBar, timeDisplay, progressContainer }
 
     let snackbarTimer;
 
@@ -1037,9 +1041,9 @@
     }
 
     // ============================================================
-    // 12. ВОСПРОИЗВЕДЕНИЕ/ПАУЗА / УПРАВЛЕНИЕ ПЛЕЕРОМ (с анимацией)
+    // 12. ВОСПРОИЗВЕДЕНИЕ/ПАУЗА / УПРАВЛЕНИЕ ПЛЕЕРОМ (с анимацией внизу)
     // ============================================================
-    function togglePlay(beatId, url, playBtn, progressWrapper, progressBar, timeDisplay, progressContainer, card) {
+    function togglePlay(beatId, url, playBtn, wrapper, progressBar, timeDisplay, progressContainer) {
       if (!url) {
         showSnackbar('❌ Аудио не загружено');
         return;
@@ -1050,8 +1054,7 @@
         currentAudio.pause();
         playBtn.textContent = '▶ Play';
         playBtn.classList.remove('playing');
-        // Плеер остаётся раскрытым (показываем прогресс)
-        // Не скрываем, чтобы пользователь видел где остановился
+        // Плеер остаётся раскрытым, чтобы показывать прогресс
         return;
       }
 
@@ -1061,23 +1064,21 @@
         if (currentPlayerElements) {
           currentPlayerElements.playBtn.textContent = '▶ Play';
           currentPlayerElements.playBtn.classList.remove('playing');
-          // Сворачиваем прогресс
-          currentPlayerElements.progressWrapper.classList.remove('expanded');
+          currentPlayerElements.wrapper.classList.remove('expanded');
         }
-        // Удаляем обработчики (чтобы не было конфликтов)
         currentAudio = null;
         currentPlayerElements = null;
       }
 
       // Показываем прогресс для этого плеера (анимация раскрытия)
-      progressWrapper.classList.add('expanded');
+      wrapper.classList.add('expanded');
 
       // Создаём аудио
       const audio = new Audio(url);
       currentAudio = audio;
-      currentPlayerElements = { playBtn, progressWrapper, progressBar, timeDisplay, progressContainer, card };
+      currentPlayerElements = { playBtn, wrapper, progressBar, timeDisplay, progressContainer };
 
-      // Обработчики событий
+      // Обработчики
       audio.addEventListener('loadedmetadata', () => {
         const total = formatTime(audio.duration);
         const current = formatTime(audio.currentTime);
@@ -1112,14 +1113,12 @@
         }
         const total = formatTime(audio.duration);
         timeDisplay.textContent = `00:00 / ${total}`;
-        // Сворачиваем плеер с анимацией
-        progressWrapper.classList.remove('expanded');
+        wrapper.classList.remove('expanded');
         currentAudio = null;
         currentPlayerElements = null;
       });
 
       audio.addEventListener('pause', () => {
-        // Обновляем кнопку, если пауза вызвана не нами
         if (currentAudio === audio && !audio.ended) {
           playBtn.textContent = '▶ Play';
           playBtn.classList.remove('playing');
@@ -1134,7 +1133,7 @@
         .catch(err => {
           showSnackbar('❌ Ошибка воспроизведения');
           console.error(err);
-          progressWrapper.classList.remove('expanded');
+          wrapper.classList.remove('expanded');
           currentAudio = null;
           currentPlayerElements = null;
         });
@@ -1147,7 +1146,7 @@
         const range = progressContainer.querySelector('input[type="range"]');
         if (range) range.value = 0;
         timeDisplay.textContent = `00:00 / 00:00`;
-        progressWrapper.classList.remove('expanded');
+        wrapper.classList.remove('expanded');
         currentAudio = null;
         currentPlayerElements = null;
       };
@@ -1271,9 +1270,8 @@
         let playerHtml = '';
         if (beat.audioUrl) {
           playerHtml = `
-            <div class="audio-player">
-              <button class="play-btn" data-url="${beat.audioUrl}">▶ Play</button>
-              <div class="progress-wrapper">
+            <div class="beat-player-wrapper">
+              <div class="beat-player-inner">
                 <div class="progress-row">
                   <div class="progress-container" data-beat-id="${beat.id}">
                     <div class="progress-bar" style="width:0%"></div>
@@ -1284,8 +1282,6 @@
               </div>
             </div>
           `;
-        } else {
-          playerHtml = `<span class="no-audio">🎵 нет аудио</span>`;
         }
 
         let actionsHtml = '';
@@ -1307,23 +1303,34 @@
           `;
         }
 
+        // Кнопка Play
+        let playHtml = '';
+        if (beat.audioUrl) {
+          playHtml = `<button class="play-btn" data-url="${beat.audioUrl}">▶ Play</button>`;
+        } else {
+          playHtml = `<span class="no-audio">🎵 нет аудио</span>`;
+        }
+
         card.innerHTML = `
-          <div class="beat-left">
-            <div class="beat-name">${beat.name}</div>
-            <div class="beat-details">
-              <span>🎵 ${beat.bpm} BPM</span>
-              <span>🎵 ${beat.key}</span>
+          <div class="beat-row">
+            <div class="beat-left">
+              <div class="beat-name">${beat.name}</div>
+              <div class="beat-details">
+                <span>🎵 ${beat.bpm} BPM</span>
+                <span>🎵 ${beat.key}</span>
+              </div>
+              <div class="beat-status">
+                <span class="status-dot ${beat.status}"></span>
+                <span>${statusText}</span>
+              </div>
+              ${licensesHtml}
             </div>
-            <div class="beat-status">
-              <span class="status-dot ${beat.status}"></span>
-              <span>${statusText}</span>
+            <div class="beat-right">
+              ${playHtml}
+              ${actionsHtml}
             </div>
-            ${licensesHtml}
           </div>
-          <div class="beat-right">
-            ${playerHtml}
-            ${actionsHtml}
-          </div>
+          ${playerHtml}
         `;
 
         card.addEventListener('click', (e) => {
@@ -1333,16 +1340,16 @@
 
         if (beat.audioUrl) {
           const playBtn = card.querySelector('.play-btn');
-          const progressWrapper = card.querySelector('.progress-wrapper');
+          const wrapper = card.querySelector('.beat-player-wrapper');
           const progressBar = card.querySelector('.progress-bar');
           const timeDisplay = card.querySelector('.time-display');
           const progressContainer = card.querySelector('.progress-container');
 
-          if (playBtn && progressWrapper && progressBar && timeDisplay && progressContainer) {
+          if (playBtn && wrapper && progressBar && timeDisplay && progressContainer) {
             playBtn.addEventListener('click', function(e) {
               e.stopPropagation();
               const url = this.dataset.url;
-              togglePlay(beat.id, url, this, progressWrapper, progressBar, timeDisplay, progressContainer, card);
+              togglePlay(beat.id, url, this, wrapper, progressBar, timeDisplay, progressContainer);
             });
           }
         }
