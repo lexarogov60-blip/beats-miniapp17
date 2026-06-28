@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Sokx Beats</title>
+  <!-- Firebase SDK (только для базы данных) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ===== ВЕСЬ CSS ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      padding: 20px 16px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.3s, color 0.3s;
+    }
+
+    body.light {
+      --bg: linear-gradient(145deg, #f0f0f5, #e0e0e8);
+      --text: #1a1a1e;
+      --glass-bg: rgba(255, 255, 255, 0.45);
+      --glass-border: rgba(255, 255, 255, 0.5);
+      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+      --secondary-text: #4a4a52;
+      --accent: #8b5cf6;
+      --accent-glow: rgba(139, 92, 246, 0.25);
+      --card-hover-bg: rgba(255, 255, 255, 0.6);
+      --input-bg: rgba(255, 255, 255, 0.5);
+      --dot-shadow: rgba(0,0,0,0.1);
+      --delete-color: #e74c3c;
+      --shadow-deep: 0 10px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    body.dark {
+      --bg: linear-gradient(145deg, #0a0a0f, #14141e);
+      --text: #f0f0f5;
+      --glass-bg: rgba(20, 20, 30, 0.55);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      --secondary-text: #a0a0b0;
+      --accent: #a855f7;
+      --accent-glow: rgba(168, 85, 247, 0.3);
+      --card-hover-bg: rgba(30, 30, 42, 0.7);
+      --input-bg: rgba(30, 30, 42, 0.5);
+      --dot-shadow: rgba(0,0,0,0.3);
+      --delete-color: #ef5350;
+      --shadow-deep: 0 10px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .header h1 {
+      font-family: 'Permanent Marker', cursive;
+      font-size: 40px;
+      font-weight: 400;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, var(--accent), #6b21a5);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 
+        2px 2px 0 rgba(0, 0, 0, 0.2),
+        4px 4px 0 rgba(0, 0, 0, 0.15),
+        6px 6px 0 rgba(0, 0, 0, 0.1),
+        0 0 40px var(--accent-glow);
+      transform: rotate(-1deg) scale(1.02);
+      transition: transform 0.3s ease;
+    }
+
+    .header h1:hover {
+      transform: rotate(0deg) scale(1.05);
+    }
+
+    .header span {
+      font-size: 13px;
+      color: var(--secondary-text);
+      background: var(--glass-bg);
+      backdrop-filter: blur(8px);
+      padding: 4px 14px;
+      border-radius: 30px;
+      font-weight: 500;
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+    }
+
+    .greeting {
+      margin-bottom: 24px;
+    }
+
+    .greeting h2 {
+      font-family: 'Permanent Marker', cursive;
+      font-size: 32px;
+      font-weight: 400;
+      letter-spacing: 1px;
+      color: #ffffff;
+      text-shadow: 
+        1px 1px 0 rgba(0, 0, 0, 0.2),
+        3px 3px 0 rgba(0, 0, 0, 0.15),
+        0 0 40px rgba(255, 255, 255, 0.4),
+        0 0 80px rgba(255, 255, 255, 0.2);
+      transform: rotate(-0.5deg);
+      margin-bottom: 4px;
+    }
+
+    .greeting p {
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--secondary-text);
+      letter-spacing: 0.2px;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .search-container {
+      margin-bottom: 12px;
+    }
+
+    .search-container input {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 30px;
+      border: 1px solid var(--glass-border);
+      background: var(--input-bg);
+      backdrop-filter: blur(8px);
+      color: var(--text);
+      font-size: 15px;
+      outline: none;
+      transition: 0.3s;
+      box-shadow: var(--glass-shadow), 0 0 0 0 var(--accent-glow);
+    }
+
+    .search-container input:focus {
+      border-color: var(--accent);
+      box-shadow: var(--glass-shadow), 0 0 20px var(--accent-glow);
+    }
+
+    .add-beat-btn {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      padding: 8px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 0 20px var(--accent-glow), 0 4px 15px rgba(0,0,0,0.2);
+      margin-bottom: 12px;
+    }
+
+    .add-beat-btn:active {
+      transform: scale(0.95);
+    }
+
+    .add-form {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 16px 18px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-deep), 0 0 30px var(--accent-glow);
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .add-form.visible {
+      display: flex;
+    }
+
+    .add-form .form-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .add-form .form-row input {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: 30px;
+      border: 1px solid var(--glass-border);
+      background: var(--input-bg);
+      backdrop-filter: blur(4px);
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+      transition: 0.3s;
+      min-width: 120px;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .add-form .form-row input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 15px var(--accent-glow), inset 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .add-form .form-row input::placeholder {
+      color: var(--secondary-text);
+    }
+
+    .add-form .file-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .add-form .file-row label {
+      font-size: 13px;
+      color: var(--secondary-text);
+      font-weight: 500;
+    }
+
+    .add-form .file-row input[type="file"] {
+      padding: 8px 12px;
+      border-radius: 30px;
+      border: 1px solid var(--glass-border);
+      background: var(--input-bg);
+      backdrop-filter: blur(4px);
+      color: var(--text);
+      font-size: 13px;
+      outline: none;
+      transition: 0.3s;
+      cursor: pointer;
+    }
+
+    .add-form .file-row input[type="file"]:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    .add-form .file-row input[type="file"]::file-selector-button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      padding: 4px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-right: 12px;
+    }
+
+    .add-form .file-row input[type="file"]::file-selector-button:hover {
+      opacity: 0.8;
+    }
+
+    .add-form .form-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .add-form .form-actions button {
+      padding: 8px 20px;
+      border-radius: 30px;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .add-form .form-actions .submit-btn {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 20px var(--accent-glow), 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .add-form .form-actions .cancel-btn {
+      background: var(--glass-bg);
+      color: var(--secondary-text);
+      border: 1px solid var(--glass-border);
+    }
+
+    .add-form .form-actions button:active {
+      transform: scale(0.95);
+    }
+
+    .filters {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .filters button {
+      background: var(--glass-bg);
+      backdrop-filter: blur(8px);
+      color: var(--secondary-text);
+      border: 1px solid var(--glass-border);
+      padding: 8px 18px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s ease, color 0.3s;
+      box-shadow: var(--glass-shadow);
+    }
+
+    .filters button.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      box-shadow: 0 0 30px var(--accent-glow), 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .filters button:hover {
+      transform: scale(1.05);
+      box-shadow: var(--glass-shadow), 0 0 20px var(--accent-glow);
+    }
+
+    .filters button:active {
+      transform: scale(0.95);
+    }
+
+    .beat-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+    }
+
+    .beat-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 16px;
+      padding: 16px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--shadow-deep), 0 0 0 0 var(--accent-glow);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+      cursor: default;
+      width: 100%;
+    }
+
+    .beat-card:hover {
+      transform: scale(1.02);
+      background: var(--card-hover-bg);
+      box-shadow: var(--shadow-deep), 0 0 40px var(--accent-glow);
+    }
+
+    .beat-card:active {
+      transform: scale(0.98);
+    }
+
+    .beat-left {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .beat-name {
+      font-size: 18px;
+      font-weight: 600;
+      text-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .beat-details {
+      font-size: 14px;
+      color: var(--secondary-text);
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .beat-details span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .beat-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      margin-top: 4px;
+    }
+
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+      box-shadow: 0 0 10px var(--dot-shadow);
+    }
+
+    .status-dot.free { background: #22c55e; }
+    .status-dot.booked { background: #eab308; }
+    .status-dot.bought { background: #ef4444; }
+
+    .beat-licenses {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--secondary-text);
+      letter-spacing: 0.2px;
+    }
+
+    .beat-licenses .license-item {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .beat-licenses .license-item .price {
+      font-weight: 600;
+      color: var(--accent);
+      text-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .beat-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .beat-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      padding: 6px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 0 20px var(--accent-glow), 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .action-btn:active {
+      transform: scale(0.94);
+    }
+
+    .action-btn.bought-btn {
+      background: #ef4444;
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.3), 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .action-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .delete-btn {
+      background: transparent;
+      color: var(--delete-color);
+      border: 1px solid var(--delete-color);
+      border-radius: 30px;
+      padding: 4px 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      opacity: 0.6;
+      line-height: 1.4;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .delete-btn:hover {
+      opacity: 1;
+      background: var(--delete-color);
+      color: #fff;
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+    }
+
+    .delete-btn:active {
+      transform: scale(0.9);
+    }
+
+    .play-btn {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 30px;
+      padding: 4px 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      opacity: 0.7;
+      line-height: 1.4;
+    }
+
+    .play-btn:hover {
+      opacity: 1;
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    .play-btn.playing {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 30px var(--accent-glow);
+    }
+
+    .play-btn:active {
+      transform: scale(0.9);
+    }
+
+    .snackbar {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      color: var(--text);
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 200;
+      white-space: nowrap;
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--shadow-deep), 0 0 30px var(--accent-glow);
+    }
+
+    .snackbar.show {
+      opacity: 1;
+    }
+
+    .readonly-banner {
+      background: var(--glass-bg);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 14px;
+      color: var(--secondary-text);
+      box-shadow: var(--shadow-deep);
+      width: 100%;
+    }
+
+    @media (max-width: 400px) {
+      .header h1 { font-size: 32px; }
+      .greeting h2 { font-size: 26px; }
+      .greeting p { font-size: 15px; }
+      .beat-card { flex-wrap: wrap; }
+      .beat-right { align-items: flex-start; margin-top: 8px; width: 100%; flex-direction: row; justify-content: flex-end; }
+      .beat-actions { flex-wrap: wrap; }
+      .add-form .form-row { flex-direction: column; }
+      .add-form .file-row input[type="file"] { font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1>Sokx Beats</h1>
+      <span>app beta 0.1</span>
+    </div>
+
+    <div class="greeting">
+      <h2>Premium Beats</h2>
+      <p>Качественные биты для твоих треков.</p>
+    </div>
+
+    <div id="readonlyBanner" class="readonly-banner" style="display:none;">
+      ⚡ Вы просматриваете каталог. Только владелец может менять статусы, добавлять и удалять биты.
+    </div>
+
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Поиск по названию..." autocomplete="off">
+    </div>
+
+    <div id="addBeatContainer" style="display:none;">
+      <button class="add-beat-btn" id="toggleAddFormBtn">➕ Добавить бит</button>
+    </div>
+
+    <div class="add-form" id="addForm">
+      <div class="form-row">
+        <input type="text" id="newName" placeholder="Название бита" autocomplete="off">
+        <input type="number" id="newBpm" placeholder="BPM (число)" autocomplete="off">
+        <input type="text" id="newKey" placeholder="Тональность (например, D Minor)" autocomplete="off">
+      </div>
+      <div class="file-row">
+        <label for="audioFile">🎵 Загрузить MP3 (необязательно)</label>
+        <input type="file" id="audioFile" accept="audio/*">
+      </div>
+      <div class="form-actions">
+        <button class="cancel-btn" id="cancelAddBtn">Отмена</button>
+        <button class="submit-btn" id="submitAddBtn">Добавить</button>
+      </div>
+    </div>
+
+    <div class="filters" id="filterButtons">
+      <button class="active" data-filter="all">Все</button>
+      <button data-filter="free">Свободно</button>
+      <button data-filter="booked">Забронировано</button>
+      <button data-filter="bought">Куплено</button>
+    </div>
+
+    <div class="beat-list" id="beatList"></div>
+
+    <div id="snackbar" class="snackbar"></div>
+  </div>
+
+  <script>
+    // ============================================================
+    // 1. УКАЖИТЕ СВОЙ TELEGRAM ID (владелец)
+    // ============================================================
+    const OWNER_ID = 1235354532;  // ← ЗАМЕНИТЕ НА СВОЙ ID
+
+    // ============================================================
+    // 2. НАСТРОЙКИ CLOUDINARY (ваши данные)
+    // ============================================================
+    const CLOUDINARY_CLOUD_NAME = 'drmjtipw9';
+    const CLOUDINARY_UPLOAD_PRESET = 'sokk_beats';
+
+    // ============================================================
+    // 3. КОНФИГУРАЦИЯ FIREBASE (только база данных)
+    // ============================================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyBNYZQnPSo0O8tZT9vo4uOYKVS6_PSmNy4",
+      authDomain: "sokx-beats.firebaseapp.com",
+      databaseURL: "https://sokx-beats-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "sokx-beats",
+      storageBucket: "sokx-beats.firebasestorage.app",
+      messagingSenderId: "77287897049",
+      appId: "1:77287897049:web:c8fbfcda9160dfa26e4bc8"
+    };
+
+    // ============================================================
+    // 4. ИНИЦИАЛИЗАЦИЯ FIREBASE
+    // ============================================================
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const beatsRef = database.ref('beats');
+
+    // ============================================================
+    // 5. ЗАГРУЗКА ДАННЫХ В РЕАЛЬНОМ ВРЕМЕНИ
+    // ============================================================
+    let beats = [];
+
+    beatsRef.on('value', snapshot => {
+      const data = snapshot.val();
+      if (data) {
+        beats = Object.keys(data).map(key => ({
+          id: key,
+          ...data[key]
+        }));
+      } else {
+        beats = [];
+      }
+      renderBeats();
+    });
+
+    // ============================================================
+    // 6. ЭЛЕМЕНТЫ
+    // ============================================================
+    const beatList = document.getElementById('beatList');
+    const snackbar = document.getElementById('snackbar');
+    const filterButtons = document.querySelectorAll('#filterButtons button');
+    const readonlyBanner = document.getElementById('readonlyBanner');
+    const searchInput = document.getElementById('searchInput');
+    const addBeatContainer = document.getElementById('addBeatContainer');
+    const toggleAddFormBtn = document.getElementById('toggleAddFormBtn');
+    const addForm = document.getElementById('addForm');
+    const cancelAddBtn = document.getElementById('cancelAddBtn');
+    const submitAddBtn = document.getElementById('submitAddBtn');
+    const newName = document.getElementById('newName');
+    const newBpm = document.getElementById('newBpm');
+    const newKey = document.getElementById('newKey');
+    const audioFile = document.getElementById('audioFile');
+
+    let currentUser = null;
+    let isOwner = false;
+
+    // ============================================================
+    // 7. ОПРЕДЕЛЯЕМ ВЛАДЕЛЬЦА
+    // ============================================================
+    if (window.Telegram && Telegram.WebApp) {
+      const webapp = Telegram.WebApp;
+      webapp.ready();
+      webapp.expand();
+
+      if (webapp.initDataUnsafe && webapp.initDataUnsafe.user) {
+        currentUser = webapp.initDataUnsafe.user;
+        isOwner = (currentUser.id === OWNER_ID);
+        console.log('Пользователь из Telegram:', currentUser);
+        console.log('Владелец?', isOwner);
+      } else {
+        isOwner = false;
+        console.warn('Данные пользователя не получены, вы гость.');
+      }
+
+      const colorScheme = webapp.colorScheme;
+      document.body.classList.add(colorScheme);
+      webapp.onEvent('themeChanged', () => {
+        document.body.classList.remove('light', 'dark');
+        document.body.classList.add(webapp.colorScheme);
+      });
+    } else {
+      // Браузерный режим
+      const urlParams = new URLSearchParams(window.location.search);
+      const testOwner = urlParams.get('owner') === '1';
+      isOwner = testOwner;
+      if (testOwner) {
+        console.log('Тестовый режим: владелец');
+        setTimeout(() => showSnackbar('🧪 Тестовый режим владельца'), 500);
+      } else {
+        console.log('Браузерный режим: гость');
+      }
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+      } else {
+        document.body.classList.add('light');
+      }
+    }
+
+    if (!isOwner) {
+      readonlyBanner.style.display = 'block';
+    } else {
+      addBeatContainer.style.display = 'block';
+    }
+
+    let currentFilter = 'all';
+    let searchQuery = '';
+    let currentAudio = null;
+
+    let snackbarTimer;
+
+    function showSnackbar(text) {
+      snackbar.textContent = text;
+      snackbar.classList.add('show');
+      clearTimeout(snackbarTimer);
+      snackbarTimer = setTimeout(() => {
+        snackbar.classList.remove('show');
+      }, 2500);
+    }
+
+    // ============================================================
+    // 8. ЗАГРУЗКА АУДИО В CLOUDINARY
+    // ============================================================
+    function uploadAudioToCloudinary(file) {
+      return new Promise((resolve, reject) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+        const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`;
+
+        fetch(url, {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Ошибка загрузки: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.secure_url) {
+            resolve(data.secure_url);
+          } else {
+            reject(new Error('Не получена ссылка на файл'));
+          }
+        })
+        .catch(err => reject(err));
+      });
+    }
+
+    // ============================================================
+    // 9. ДОБАВЛЕНИЕ БИТА (с загрузкой аудио в Cloudinary)
+    // ============================================================
+    function addBeat() {
+      if (!isOwner) {
+        showSnackbar('Только владелец может добавлять биты.');
+        return;
+      }
+
+      const name = newName.value.trim();
+      const bpm = parseInt(newBpm.value.trim());
+      const key = newKey.value.trim();
+
+      if (!name || !bpm || !key) {
+        showSnackbar('Заполните все поля!');
+        return;
+      }
+      if (isNaN(bpm) || bpm < 1) {
+        showSnackbar('BPM должно быть числом больше 0');
+        return;
+      }
+
+      const newBeat = {
+        name: name,
+        bpm: bpm,
+        key: key,
+        nonExcl: 1500,
+        excl: 3000,
+        status: 'free'
+      };
+
+      const file = audioFile.files[0];
+      if (file) {
+        showSnackbar('⏳ Загрузка аудио в Cloudinary...');
+        uploadAudioToCloudinary(file)
+          .then(audioUrl => {
+            newBeat.audioUrl = audioUrl;
+            return beatsRef.push(newBeat);
+          })
+          .then(() => {
+            showSnackbar(`Бит "${name}" добавлен с аудио!`);
+            resetForm();
+          })
+          .catch(err => {
+            showSnackbar('Ошибка загрузки аудио: ' + err.message);
+            console.error(err);
+          });
+      } else {
+        // Без аудио
+        beatsRef.push(newBeat)
+          .then(() => {
+            showSnackbar(`Бит "${name}" добавлен!`);
+            resetForm();
+          })
+          .catch(err => showSnackbar('Ошибка: ' + err.message));
+      }
+    }
+
+    function resetForm() {
+      newName.value = '';
+      newBpm.value = '';
+      newKey.value = '';
+      audioFile.value = '';
+      addForm.classList.remove('visible');
+    }
+
+    // ============================================================
+    // 10. УДАЛЕНИЕ БИТА (аудио на Cloudinary остаётся)
+    // ============================================================
+    function deleteBeat(id) {
+      if (!isOwner) return;
+      const beat = beats.find(b => b.id === id);
+      if (!beat) return;
+      if (!confirm(`Удалить бит "${beat.name}"?`)) return;
+
+      beatsRef.child(id).remove()
+        .then(() => showSnackbar(`Бит "${beat.name}" удалён.`))
+        .catch(err => showSnackbar('Ошибка: ' + err.message));
+    }
+
+    // ============================================================
+    // 11. ИЗМЕНЕНИЕ СТАТУСА
+    // ============================================================
+    function changeStatus(id) {
+      if (!isOwner) {
+        showSnackbar('У вас нет прав для изменения статусов.');
+        return;
+      }
+      const beat = beats.find(b => b.id === id);
+      if (!beat) return;
+
+      let newStatus, message;
+      if (beat.status === 'free') {
+        newStatus = 'booked';
+        message = `Бит "${beat.name}" забронирован!`;
+      } else if (beat.status === 'booked') {
+        newStatus = 'bought';
+        message = `Бит "${beat.name}" куплен!`;
+      } else {
+        newStatus = 'free';
+        message = `Бит "${beat.name}" освобождён.`;
+      }
+
+      beatsRef.child(id).update({ status: newStatus })
+        .then(() => showSnackbar(message))
+        .catch(err => showSnackbar('Ошибка: ' + err.message));
+    }
+
+    // ============================================================
+    // 12. ВОСПРОИЗВЕДЕНИЕ АУДИО
+    // ============================================================
+    function playAudio(url, buttonElement) {
+      if (!url) {
+        showSnackbar('❌ Аудио не загружено для этого бита');
+        return;
+      }
+
+      if (currentAudio && !currentAudio.paused && currentAudio.src === url) {
+        currentAudio.pause();
+        buttonElement.textContent = '▶ Play';
+        buttonElement.classList.remove('playing');
+        return;
+      }
+
+      if (currentAudio) {
+        currentAudio.pause();
+        document.querySelectorAll('.play-btn').forEach(btn => {
+          btn.textContent = '▶ Play';
+          btn.classList.remove('playing');
+        });
+      }
+
+      currentAudio = new Audio(url);
+      currentAudio.play()
+        .then(() => {
+          buttonElement.textContent = '⏸ Pause';
+          buttonElement.classList.add('playing');
+        })
+        .catch(err => {
+          showSnackbar('❌ Ошибка воспроизведения');
+          console.error(err);
+        });
+
+      currentAudio.onended = () => {
+        buttonElement.textContent = '▶ Play';
+        buttonElement.classList.remove('playing');
+        currentAudio = null;
+      };
+
+      currentAudio.onerror = () => {
+        showSnackbar('❌ Ошибка загрузки аудио');
+        buttonElement.textContent = '▶ Play';
+        buttonElement.classList.remove('playing');
+        currentAudio = null;
+      };
+    }
+
+    // ============================================================
+    // 13. ОБРАБОТЧИКИ ФОРМЫ
+    // ============================================================
+    toggleAddFormBtn.addEventListener('click', () => {
+      if (!isOwner) {
+        showSnackbar('Только владелец может добавлять биты.');
+        return;
+      }
+      addForm.classList.toggle('visible');
+      if (addForm.classList.contains('visible')) {
+        newName.focus();
+      }
+    });
+
+    cancelAddBtn.addEventListener('click', resetForm);
+
+    submitAddBtn.addEventListener('click', addBeat);
+
+    [newName, newBpm, newKey].forEach(input => {
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          if (input === newName) newBpm.focus();
+          else if (input === newBpm) newKey.focus();
+          else if (input === newKey) audioFile.click();
+        }
+      });
+    });
+
+    // ============================================================
+    // 14. РЕНДЕР СПИСКА
+    // ============================================================
+    function renderBeats() {
+      let filtered = beats;
+      if (currentFilter !== 'all') {
+        filtered = filtered.filter(b => b.status === currentFilter);
+      }
+
+      if (searchQuery.trim() !== '') {
+        const q = searchQuery.trim().toLowerCase();
+        filtered = filtered.filter(b => b.name.toLowerCase().includes(q));
+      }
+
+      if (filtered.length === 0) {
+        beatList.innerHTML = `<div style="text-align:center;color:var(--secondary-text);padding:40px 0;">Нет битов, соответствующих запросу</div>`;
+        return;
+      }
+
+      beatList.innerHTML = '';
+      filtered.forEach(beat => {
+        const card = document.createElement('div');
+        card.className = 'beat-card';
+
+        const statusText = {
+          free: 'Свободно',
+          booked: 'Забронировано',
+          bought: 'Куплено'
+        }[beat.status];
+
+        const licensesHtml = `
+          <div class="beat-licenses">
+            <div class="license-item">
+              <span>Wav / Non-Exclusive License</span>
+              <span class="price">— ${beat.nonExcl}₽</span>
+            </div>
+            <div class="license-item">
+              <span>Wav / Exclusive License</span>
+              <span class="price">— ${beat.excl}₽</span>
+            </div>
+          </div>
+        `;
+
+        let actionsHtml = '';
+        if (isOwner) {
+          let actionText, actionClass = '';
+          if (beat.status === 'free') {
+            actionText = 'Забронировать';
+          } else if (beat.status === 'booked') {
+            actionText = 'Купить';
+          } else {
+            actionText = 'Освободить';
+            actionClass = 'bought-btn';
+          }
+          actionsHtml = `
+            <div class="beat-actions">
+              <button class="action-btn ${actionClass}" data-id="${beat.id}">${actionText}</button>
+              <button class="delete-btn" data-id="${beat.id}">✕</button>
+            </div>
+          `;
+        }
+
+        const hasAudio = beat.audioUrl ? true : false;
+        const playBtnHtml = hasAudio
+          ? `<button class="play-btn" data-url="${beat.audioUrl}">▶ Play</button>`
+          : `<span style="font-size:12px;color:var(--secondary-text);opacity:0.5;">🎵 нет аудио</span>`;
+
+        card.innerHTML = `
+          <div class="beat-left">
+            <div class="beat-name">${beat.name}</div>
+            <div class="beat-details">
+              <span>🎵 ${beat.bpm} BPM</span>
+              <span>🎵 ${beat.key}</span>
+            </div>
+            <div class="beat-status">
+              <span class="status-dot ${beat.status}"></span>
+              <span>${statusText}</span>
+            </div>
+            ${licensesHtml}
+          </div>
+          <div class="beat-right">
+            ${playBtnHtml}
+            ${actionsHtml}
+          </div>
+        `;
+
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('button')) return;
+          showSnackbar(`Бит "${beat.name}" – ${statusText}`);
+        });
+
+        const playBtn = card.querySelector('.play-btn');
+        if (playBtn) {
+          playBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const url = playBtn.dataset.url;
+            playAudio(url, playBtn);
+          });
+        }
+
+        if (isOwner) {
+          const actionBtn = card.querySelector('.action-btn');
+          if (actionBtn) {
+            actionBtn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              changeStatus(beat.id);
+            });
+          }
+          const deleteBtn = card.querySelector('.delete-btn');
+          if (deleteBtn) {
+            deleteBtn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              deleteBeat(beat.id);
+            });
+          }
+        }
+
+        beatList.appendChild(card);
+      });
+    }
+
+    // ============================================================
+    // 15. ФИЛЬТРЫ И ПОИСК
+    // ============================================================
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', function() {
+        filterButtons.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        currentFilter = this.dataset.filter;
+        renderBeats();
+      });
+    });
+
+    searchInput.addEventListener('input', function() {
+      searchQuery = this.value;
+      renderBeats();
+    });
+
+    renderBeats();
+  </script>
+
+</body>
+</html>
