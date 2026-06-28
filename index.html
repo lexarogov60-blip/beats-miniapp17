@@ -655,10 +655,11 @@
     const OWNER_ID = 1235354532;
 
     // ============================================================
-    // 2. НАСТРОЙКИ CLOUDINARY (исправлено имя пресета)
+    // 2. НАСТРОЙКИ CLOUDINARY
     // ============================================================
     const CLOUDINARY_CLOUD_NAME = 'drmjtipw9';
-    const CLOUDINARY_UPLOAD_PRESET = 'sokx_beats';  // ← ИСПРАВЛЕНО
+    // Для теста используйте 'ml_default' — если заработает, значит проблема в вашем пресете
+    const CLOUDINARY_UPLOAD_PRESET = 'sokx_beats'; // или 'ml_default'
 
     // ============================================================
     // 3. КОНФИГУРАЦИЯ FIREBASE
@@ -787,16 +788,16 @@
     }
 
     // ============================================================
-    // 8. ЗАГРУЗКА АУДИО В CLOUDINARY (с обработкой ошибок)
+    // 8. ЗАГРУЗКА АУДИО В CLOUDINARY (исправленная версия)
     // ============================================================
     function uploadAudioToCloudinary(file) {
       return new Promise((resolve, reject) => {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-        formData.append('resource_type', 'auto');
 
-        const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`;
+        // Используем auto в URL для автоматического определения типа
+        const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`;
 
         fetch(url, {
           method: 'POST',
