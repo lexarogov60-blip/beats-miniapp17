@@ -369,7 +369,7 @@
       transform: scale(0.95);
     }
 
-    /* ===== ДРОПДАУН СОРТИРОВКИ (стеклянная заливка) ===== */
+    /* ===== ДРОПДАУН СОРТИРОВКИ ===== */
     .sort-dropdown {
       position: relative;
       display: inline-block;
@@ -440,11 +440,11 @@
       transition: 0.2s;
       white-space: nowrap;
       border-radius: 6px;
-      margin: 0 4px; /* небольшой отступ, чтобы скругления смотрелись аккуратнее */
+      margin: 0 4px;
     }
 
     .sort-dropdown .sort-menu .sort-option:hover {
-      background: rgba(168, 85, 247, 0.15); /* полупрозрачный фиолетовый */
+      background: rgba(168, 85, 247, 0.15);
       backdrop-filter: blur(4px);
       color: var(--text);
     }
@@ -456,7 +456,7 @@
       box-shadow: 0 0 12px var(--accent-glow);
     }
 
-    /* ===== КАРТОЧКА БИТА (обложка слева) ===== */
+    /* ===== КАРТОЧКА БИТА ===== */
     .beat-list {
       display: flex;
       flex-direction: column;
@@ -475,7 +475,7 @@
       border: 1px solid var(--glass-border);
       box-shadow: var(--shadow-deep), 0 0 0 0 var(--accent-glow);
       transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-      cursor: default;
+      cursor: pointer;
       width: 100%;
     }
 
@@ -497,7 +497,6 @@
       flex-wrap: wrap;
     }
 
-    /* Обложка слева */
     .beat-cover {
       flex: 0 0 60px;
       width: 60px;
@@ -513,7 +512,7 @@
       justify-content: center;
       font-size: 24px;
       color: var(--secondary-text);
-      order: 0; /* первая */
+      order: 0;
     }
 
     .beat-cover:hover {
@@ -528,14 +527,13 @@
       display: block;
     }
 
-    /* Информация о бите */
     .beat-left {
       display: flex;
       flex-direction: column;
       gap: 2px;
       flex: 1 1 50%;
       min-width: 0;
-      order: 1; /* вторая */
+      order: 1;
     }
 
     .beat-name {
@@ -618,7 +616,7 @@
       gap: 4px;
       flex: 0 1 30%;
       max-width: 30%;
-      order: 2; /* третья */
+      order: 2;
       margin-left: auto;
     }
 
@@ -630,22 +628,24 @@
       justify-content: flex-end;
     }
 
+    /* ===== НОВАЯ КНОПКА PLAY (скруглённые углы) ===== */
     .play-btn {
       background: transparent;
       border: none;
-      padding: 4px 6px;
+      padding: 4px 8px;
       font-size: 20px;
       line-height: 1;
       cursor: pointer;
       color: var(--accent);
-      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s;
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s, background 0.2s;
       opacity: 0.8;
-      border-radius: 6px;
+      border-radius: 8px;
     }
 
     .play-btn:hover {
-      transform: scale(1.25);
+      transform: scale(1.2);
       opacity: 1;
+      background: rgba(168, 85, 247, 0.08);
     }
 
     .play-btn.playing {
@@ -816,6 +816,93 @@
       font-size: 10px;
       color: var(--secondary-text);
       opacity: 0.5;
+    }
+
+    /* ===== МОДАЛЬНОЕ ОКНО ДЛЯ ЗАБРОНИРОВАТЬ/ПРИОБРЕСТИ ===== */
+    .action-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(6px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 400;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .action-modal-overlay.active {
+      display: flex;
+    }
+
+    .action-modal {
+      background: var(--glass-bg);
+      backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 24px 28px;
+      max-width: 300px;
+      width: 85%;
+      box-shadow: var(--shadow-deep), 0 0 40px var(--accent-glow);
+      animation: slideUp 0.3s ease;
+      text-align: center;
+    }
+
+    .action-modal h4 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .action-modal p {
+      font-size: 13px;
+      color: var(--secondary-text);
+      margin-bottom: 16px;
+    }
+
+    .action-modal .modal-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .action-modal .modal-buttons button {
+      padding: 8px 16px;
+      border-radius: 30px;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 16px var(--accent-glow);
+    }
+
+    .action-modal .modal-buttons button:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 24px var(--accent-glow);
+    }
+
+    .action-modal .modal-buttons button:active {
+      transform: scale(0.95);
+    }
+
+    .action-modal .modal-buttons .close-modal-btn {
+      background: transparent;
+      color: var(--secondary-text);
+      border: 1px solid var(--glass-border);
+      box-shadow: none;
+      font-size: 13px;
+    }
+
+    .action-modal .modal-buttons .close-modal-btn:hover {
+      background: var(--glass-bg);
+      box-shadow: none;
     }
 
     /* ===== МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ ===== */
@@ -1058,6 +1145,7 @@
       .beat-player-wrapper.expanded { max-height: 50px; }
       .modal { max-width: 100%; }
       .sort-dropdown .sort-menu { left: auto; right: 0; }
+      .action-modal { padding: 20px; }
     }
 
     @media (max-width: 380px) {
@@ -1072,13 +1160,16 @@
       .beat-cover { flex: 0 0 44px; width: 44px; height: 44px; font-size: 20px; }
       .action-btn { font-size: 9px; padding: 1px 8px; }
       .delete-btn { font-size: 9px; padding: 1px 5px; }
-      .play-btn { font-size: 18px; padding: 2px 4px; }
+      .play-btn { font-size: 18px; padding: 2px 6px; }
       .edit-btn { width: 20px; height: 20px; font-size: 10px; }
       .time-display { font-size: 9px; min-width: 44px; }
       .filters button { font-size: 10px; padding: 2px 10px; }
       .login-key { font-size: 14px; }
       .sort-dropdown .sort-trigger { font-size: 10px; padding: 2px 10px; }
       .sort-dropdown .sort-menu .sort-option { font-size: 10px; padding: 3px 12px; }
+      .action-modal h4 { font-size: 14px; }
+      .action-modal p { font-size: 12px; }
+      .action-modal .modal-buttons button { font-size: 13px; padding: 6px 14px; }
     }
   </style>
 </head>
@@ -1152,6 +1243,19 @@
 
     <div class="beat-list" id="beatList"></div>
 
+    <!-- Модальное окно "Забронировать / Приобрести" -->
+    <div class="action-modal-overlay" id="actionModal">
+      <div class="action-modal">
+        <h4 id="actionModalTitle">Название бита</h4>
+        <p id="actionModalDesc">Выберите действие</p>
+        <div class="modal-buttons">
+          <button id="bookBtn">📌 Забронировать</button>
+          <button id="buyBtn">💰 Приобрести</button>
+          <button class="close-modal-btn" id="closeActionModal">Закрыть</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Модальное окно редактирования -->
     <div class="modal-overlay" id="editModal">
       <div class="modal">
@@ -1187,13 +1291,18 @@
     const OWNER_ID = 1235354532;
 
     // ============================================================
-    // 2. НАСТРОЙКИ CLOUDINARY
+    // 2. ВАША ССЫЛКА НА TELEGRAM
+    // ============================================================
+    const TG_LINK = 'https://t.me/arremixxx';
+
+    // ============================================================
+    // 3. НАСТРОЙКИ CLOUDINARY
     // ============================================================
     const CLOUDINARY_CLOUD_NAME = 'drmjtipw9';
     const CLOUDINARY_UPLOAD_PRESET = 'sokx_beats';
 
     // ============================================================
-    // 3. КОНФИГУРАЦИЯ FIREBASE
+    // 4. КОНФИГУРАЦИЯ FIREBASE
     // ============================================================
     const firebaseConfig = {
       apiKey: "AIzaSyBNYZQnPSo0O8tZT9vo4uOYKVS6_PSmNy4",
@@ -1206,14 +1315,14 @@
     };
 
     // ============================================================
-    // 4. ИНИЦИАЛИЗАЦИЯ FIREBASE
+    // 5. ИНИЦИАЛИЗАЦИЯ FIREBASE
     // ============================================================
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
     const beatsRef = database.ref('beats');
 
     // ============================================================
-    // 5. ЗАГРУЗКА ДАННЫХ В РЕАЛЬНОМ ВРЕМЕНИ
+    // 6. ЗАГРУЗКА ДАННЫХ В РЕАЛЬНОМ ВРЕМЕНИ
     // ============================================================
     let beats = [];
 
@@ -1231,7 +1340,7 @@
     });
 
     // ============================================================
-    // 6. ЭЛЕМЕНТЫ
+    // 7. ЭЛЕМЕНТЫ
     // ============================================================
     const beatList = document.getElementById('beatList');
     const snackbar = document.getElementById('snackbar');
@@ -1249,6 +1358,15 @@
     const audioFile = document.getElementById('audioFile');
     const coverFile = document.getElementById('coverFile');
     const loginKey = document.getElementById('loginKey');
+
+    // Элементы модалки действий
+    const actionModal = document.getElementById('actionModal');
+    const actionModalTitle = document.getElementById('actionModalTitle');
+    const actionModalDesc = document.getElementById('actionModalDesc');
+    const bookBtn = document.getElementById('bookBtn');
+    const buyBtn = document.getElementById('buyBtn');
+    const closeActionModal = document.getElementById('closeActionModal');
+    let selectedBeatId = null;
 
     // Элементы сортировки
     const sortOptions = document.querySelectorAll('.sort-option');
@@ -1274,7 +1392,7 @@
     let isTelegram = false;
 
     // ============================================================
-    // 7. ОПРЕДЕЛЯЕМ СРЕДУ (Telegram или браузер)
+    // 8. ОПРЕДЕЛЯЕМ СРЕДУ (Telegram или браузер)
     // ============================================================
     if (window.Telegram && Telegram.WebApp) {
       isTelegram = true;
@@ -1311,7 +1429,7 @@
     }
 
     // ============================================================
-    // 8. ФУНКЦИЯ ВХОДА ПО КЛЮЧИКУ
+    // 9. ФУНКЦИЯ ВХОДА ПО КЛЮЧИКУ
     // ============================================================
     function attemptLogin() {
       const input = prompt('Введите ваш Telegram ID (владелец):');
@@ -1332,7 +1450,7 @@
     loginKey.addEventListener('click', attemptLogin);
 
     // ============================================================
-    // 9. ОБНОВЛЕНИЕ ИНТЕРФЕЙСА
+    // 10. ОБНОВЛЕНИЕ ИНТЕРФЕЙСА
     // ============================================================
     function updateUI() {
       if (!isOwner) {
@@ -1350,7 +1468,7 @@
     updateUI();
 
     // ============================================================
-    // 10. УНИВЕРСАЛЬНАЯ ЗАГРУЗКА ФАЙЛОВ В CLOUDINARY
+    // 11. УНИВЕРСАЛЬНАЯ ЗАГРУЗКА ФАЙЛОВ В CLOUDINARY
     // ============================================================
     function uploadFileToCloudinary(file) {
       return new Promise((resolve, reject) => {
@@ -1388,7 +1506,7 @@
     }
 
     // ============================================================
-    // 11. ДОБАВЛЕНИЕ БИТА
+    // 12. ДОБАВЛЕНИЕ БИТА
     // ============================================================
     function addBeat() {
       if (!isOwner) {
@@ -1479,7 +1597,7 @@
     }
 
     // ============================================================
-    // 12. УДАЛЕНИЕ БИТА
+    // 13. УДАЛЕНИЕ БИТА
     // ============================================================
     function deleteBeat(id) {
       if (!isOwner) return;
@@ -1493,7 +1611,7 @@
     }
 
     // ============================================================
-    // 13. РЕДАКТИРОВАНИЕ БИТА (с удалением обложки)
+    // 14. РЕДАКТИРОВАНИЕ БИТА
     // ============================================================
     function openEditModal(id) {
       const beat = beats.find(b => b.id === id);
@@ -1587,7 +1705,7 @@
     });
 
     // ============================================================
-    // 14. ИЗМЕНЕНИЕ СТАТУСА
+    // 15. ИЗМЕНЕНИЕ СТАТУСА
     // ============================================================
     function changeStatus(id) {
       if (!isOwner) {
@@ -1615,7 +1733,39 @@
     }
 
     // ============================================================
-    // 15. ВОСПРОИЗВЕДЕНИЕ/ПАУЗА
+    // 16. МОДАЛЬНОЕ ОКНО "ЗАБРОНИРОВАТЬ / ПРИОБРЕСТИ"
+    // ============================================================
+    function openActionModal(beatId) {
+      const beat = beats.find(b => b.id === beatId);
+      if (!beat) return;
+      selectedBeatId = beatId;
+      actionModalTitle.textContent = beat.name;
+      actionModalDesc.textContent = `${beat.bpm} BPM • ${beat.key}`;
+      actionModal.classList.add('active');
+    }
+
+    function closeActionModalFn() {
+      actionModal.classList.remove('active');
+      selectedBeatId = null;
+    }
+
+    bookBtn.addEventListener('click', () => {
+      window.open(TG_LINK, '_blank');
+      closeActionModalFn();
+    });
+
+    buyBtn.addEventListener('click', () => {
+      window.open(TG_LINK, '_blank');
+      closeActionModalFn();
+    });
+
+    closeActionModal.addEventListener('click', closeActionModalFn);
+    actionModal.addEventListener('click', (e) => {
+      if (e.target === actionModal) closeActionModalFn();
+    });
+
+    // ============================================================
+    // 17. ВОСПРОИЗВЕДЕНИЕ/ПАУЗА
     // ============================================================
     let currentAudio = null;
     let currentPlayerElements = null;
@@ -1765,7 +1915,7 @@
     }
 
     // ============================================================
-    // 16. ОБРАБОТЧИКИ ФОРМЫ ДОБАВЛЕНИЯ
+    // 18. ОБРАБОТЧИКИ ФОРМЫ ДОБАВЛЕНИЯ
     // ============================================================
     toggleAddFormBtn.addEventListener('click', () => {
       if (!isOwner) {
@@ -1793,7 +1943,7 @@
     });
 
     // ============================================================
-    // 17. СОРТИРОВКА
+    // 19. СОРТИРОВКА
     // ============================================================
     sortOptions.forEach(option => {
       option.addEventListener('click', function() {
@@ -1824,7 +1974,7 @@
     });
 
     // ============================================================
-    // 18. РЕНДЕР СПИСКА (с обложками слева)
+    // 20. РЕНДЕР СПИСКА
     // ============================================================
     function renderBeats() {
       let filtered = beats;
@@ -1880,7 +2030,6 @@
           </div>
         `;
 
-        // Обложка
         let coverHtml = '';
         if (beat.coverUrl) {
           coverHtml = `<div class="beat-cover"><img src="${beat.coverUrl}" alt="cover"></div>`;
@@ -1955,9 +2104,10 @@
           ${playerHtml}
         `;
 
+        // Клик по карточке (кроме кнопок) — открываем модалку действий
         card.addEventListener('click', (e) => {
           if (e.target.closest('button')) return;
-          showSnackbar(`Бит "${beat.name}" – ${statusText}`);
+          openActionModal(beat.id);
         });
 
         if (beat.audioUrl) {
@@ -2005,7 +2155,7 @@
     }
 
     // ============================================================
-    // 19. ФИЛЬТРЫ И ПОИСК
+    // 21. ФИЛЬТРЫ И ПОИСК
     // ============================================================
     let currentFilter = 'all';
     let searchQuery = '';
@@ -2025,7 +2175,7 @@
     });
 
     // ============================================================
-    // 20. SNACKBAR
+    // 22. SNACKBAR
     // ============================================================
     let snackbarTimer;
 
@@ -2039,7 +2189,7 @@
     }
 
     // ============================================================
-    // 21. ПЕРВОНАЧАЛЬНЫЙ РЕНДЕР
+    // 23. ПЕРВОНАЧАЛЬНЫЙ РЕНДЕР
     // ============================================================
     renderBeats();
   </script>
