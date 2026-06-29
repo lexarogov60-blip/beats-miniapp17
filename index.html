@@ -628,33 +628,44 @@
       justify-content: flex-end;
     }
 
-    /* ===== НОВАЯ КНОПКА PLAY (скруглённые углы, без фона при наведении) ===== */
+    /* ===== КНОПКА PLAY (с закруглённым треугольником) ===== */
     .play-btn {
       background: transparent;
       border: none;
-      padding: 4px 8px;
-      font-size: 20px;
-      line-height: 1;
+      padding: 4px;
       cursor: pointer;
-      color: var(--accent);
       transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s;
       opacity: 0.8;
-      border-radius: 12px; /* значительно скруглённые углы */
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
     }
 
     .play-btn:hover {
       transform: scale(1.2);
       opacity: 1;
-      /* фон убран */
-    }
-
-    .play-btn.playing {
-      color: var(--accent);
-      opacity: 1;
     }
 
     .play-btn:active {
       transform: scale(0.9);
+    }
+
+    .play-btn svg {
+      width: 100%;
+      height: 100%;
+      fill: var(--accent);
+      stroke: var(--accent);
+      stroke-width: 4px;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+    }
+
+    .play-btn.playing svg {
+      fill: var(--accent);
+      stroke: var(--accent);
     }
 
     .edit-btn {
@@ -1160,7 +1171,7 @@
       .beat-cover { flex: 0 0 44px; width: 44px; height: 44px; font-size: 20px; }
       .action-btn { font-size: 9px; padding: 1px 8px; }
       .delete-btn { font-size: 9px; padding: 1px 5px; }
-      .play-btn { font-size: 18px; padding: 2px 6px; }
+      .play-btn { width: 24px; height: 24px; padding: 2px; }
       .edit-btn { width: 20px; height: 20px; font-size: 10px; }
       .time-display { font-size: 9px; min-width: 44px; }
       .filters button { font-size: 10px; padding: 2px 10px; }
@@ -1775,10 +1786,23 @@
     });
 
     // ============================================================
-    // 17. ВОСПРОИЗВЕДЕНИЕ/ПАУЗА
+    // 17. ВОСПРОИЗВЕДЕНИЕ/ПАУЗА (с SVG иконками, исправлена пауза и stopPropagation)
     // ============================================================
     let currentAudio = null;
     let currentPlayerElements = null;
+
+    function getPlaySVG() {
+      return `<svg viewBox="0 0 24 24">
+        <polygon points="5 3 19 12 5 21"/>
+      </svg>`;
+    }
+
+    function getPauseSVG() {
+      return `<svg viewBox="0 0 24 24">
+        <rect x="6" y="4" width="3" height="16" rx="1.5" ry="1.5"/>
+        <rect x="15" y="4" width="3" height="16" rx="1.5" ry="1.5"/>
+      </svg>`;
+    }
 
     function togglePlay(beatId, url, playBtn, wrapper, progressBar, timeDisplay, progressContainer) {
       if (!url) {
@@ -1788,7 +1812,7 @@
 
       if (currentAudio && !currentAudio.paused && currentAudio.src === url) {
         currentAudio.pause();
-        playBtn.textContent = '▶';
+        playBtn.innerHTML = getPlaySVG();
         playBtn.classList.remove('playing');
         return;
       }
@@ -1796,7 +1820,7 @@
       if (currentAudio) {
         currentAudio.pause();
         if (currentPlayerElements) {
-          currentPlayerElements.playBtn.textContent = '▶';
+          currentPlayerElements.playBtn.innerHTML = getPlaySVG();
           currentPlayerElements.playBtn.classList.remove('playing');
           currentPlayerElements.wrapper.classList.remove('expanded');
         }
@@ -1835,7 +1859,7 @@
       });
 
       audio.addEventListener('ended', () => {
-        playBtn.textContent = '▶';
+        playBtn.innerHTML = getPlaySVG();
         playBtn.classList.remove('playing');
         progressBar.style.width = '0%';
         const range = progressContainer.querySelector('input[type="range"]');
@@ -1851,14 +1875,14 @@
 
       audio.addEventListener('pause', () => {
         if (currentAudio === audio && !audio.ended) {
-          playBtn.textContent = '▶';
+          playBtn.innerHTML = getPlaySVG();
           playBtn.classList.remove('playing');
         }
       });
 
       audio.play()
         .then(() => {
-          playBtn.textContent = '⏸';
+          playBtn.innerHTML = getPauseSVG();
           playBtn.classList.add('playing');
         })
         .catch(err => {
@@ -1871,7 +1895,7 @@
 
       audio.onerror = () => {
         showSnackbar('❌ Ошибка загрузки аудио');
-        playBtn.textContent = '▶';
+        playBtn.innerHTML = getPlaySVG();
         playBtn.classList.remove('playing');
         progressBar.style.width = '0%';
         const range = progressContainer.querySelector('input[type="range"]');
@@ -1897,7 +1921,9 @@
         });
       }
 
+      // Клик по прогресс-бару для перемотки (с stopPropagation)
       progressContainer.addEventListener('click', function(e) {
+        e.stopPropagation(); // предотвращаем всплытие к карточке, чтобы не открывалась модалка
         if (e.target === rangeInput) return;
         const rect = this.getBoundingClientRect();
         const x = (e.clientX - rect.left) / rect.width;
@@ -1984,7 +2010,7 @@
     });
 
     // ============================================================
-    // 20. РЕНДЕР СПИСКА
+    // 20. РЕНДЕР СПИСКА (с защитой от всплытия клика на прогресс)
     // ============================================================
     function renderBeats() {
       let filtered = beats;
@@ -2086,7 +2112,11 @@
 
         let playHtml = '';
         if (beat.audioUrl) {
-          playHtml = `<button class="play-btn" data-url="${beat.audioUrl}">▶</button>`;
+          playHtml = `
+            <button class="play-btn" data-url="${beat.audioUrl}">
+              ${getPlaySVG()}
+            </button>
+          `;
         } else {
           playHtml = `<span class="no-audio">🎵 нет аудио</span>`;
         }
@@ -2114,9 +2144,11 @@
           ${playerHtml}
         `;
 
-        // Клик по карточке (кроме кнопок) — открываем модалку действий
+        // Клик по карточке (кроме кнопок и плеера) — открываем модалку действий
         card.addEventListener('click', (e) => {
+          // Игнорируем клики по кнопкам и по области плеера (прогресс-бар и всё, что внутри .beat-player-wrapper)
           if (e.target.closest('button')) return;
+          if (e.target.closest('.beat-player-wrapper')) return;
           openActionModal(beat.id);
         });
 
